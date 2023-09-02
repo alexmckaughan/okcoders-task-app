@@ -1,21 +1,38 @@
-import React from 'react';
-import { useDraggable } from '@dnd-kit/core';
-import { Card } from '@mui/material';
+import { useState } from 'react';
+import { Card, CardActions, CardContent, Collapse, Typography } from '@mui/material';
+import { ExpandMore } from '@mui/icons-material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 export function TaskCard(props) {
-    const test = "test";
-    const test2 = "test2";
-    const { attributes, listeners, setNodeRef, transform } = useDraggable({
-        id: props.id,
-    });
-    const style = transform ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-    } : undefined;
+    const [expanded, setExpanded] = useState(false);
 
+    const handleExpandClick = () => {
+        setExpanded(!expanded);
+    };
 
     return (
-        <Card ref={setNodeRef} style={style} {...listeners} {...attributes}>
-            {props.children}
+        <Card sx={{ maxWidth: 345 }}>
+            <CardContent>
+                <Typography gutterBottom variant="h5" component="div">
+                    Lizard
+                </Typography>
+                <ExpandMore
+                    expand={expanded}
+                    onClick={handleExpandClick}
+                    aria-expanded={expanded}
+                    aria-label="show more"
+                >
+                    <ExpandMoreIcon />
+                </ExpandMore>
+            </CardContent>
+            <Collapse in={expanded} timeout="auto" unmountOnExit>
+                <CardContent>
+                    <Typography paragraph>
+                        Heat 1/2 cup of the broth in a pot until simmering, add saffron and set
+                        aside for 10 minutes.
+                    </Typography>
+                </CardContent>
+            </Collapse>
         </Card>
     );
 }
