@@ -3,6 +3,7 @@ import { useDraggable } from '@dnd-kit/core';
 import { Card } from '@mui/material';
 
 export function TaskCard(props) {
+    const test = "test";
     const { attributes, listeners, setNodeRef, transform } = useDraggable({
         id: props.id,
     });
