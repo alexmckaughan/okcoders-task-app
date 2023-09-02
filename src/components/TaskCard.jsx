@@ -4,6 +4,7 @@ import { Card } from '@mui/material';
 
 export function TaskCard(props) {
     const test = "test";
+    const test2 = "test2";
     const { attributes, listeners, setNodeRef, transform } = useDraggable({
         id: props.id,
     });
