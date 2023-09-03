@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Button, Box } from "@mui/material";
 import KanbanBoard from "../../components/KanbanBoard";
+import { TaskCard } from "@/components/TaskCard";
 
 export default function Tasks() {
   //useState to update tasks to an array that is fetched from the the api in function fetchTask()
@@ -20,10 +21,11 @@ export default function Tasks() {
     fetchTask();
   }, []);
 
-  console.log(tasks);
+  console.log(tasks[0]);
   return (
     <>
-      <KanbanBoard tasks={tasks}></KanbanBoard>
+      {/* <KanbanBoard tasks={tasks}></KanbanBoard> */}
+      {tasks[0] && <TaskCard task={tasks[0]} />}
     </>
   );
 }
