@@ -14,7 +14,6 @@ import dayjs from 'dayjs';
 export function TaskCard(props) {
     const [expanded, setExpanded] = useState(false);
     const [task, setTask] = useState(props.task);
-    const [selectedDate, setSelectedDate] = useState(task.due || null);
 
     const handleInputChange = (property, e) => {
         const newValue = e.target.value;
@@ -27,8 +26,6 @@ export function TaskCard(props) {
     return (
         <Card
             sx={{ maxWidth: 345 }}
-            onMouseEnter={() => setExpanded(true)}
-            onMouseLeave={() => setExpanded(false)}
         >
             <CardContent
                 sx={{
@@ -43,6 +40,8 @@ export function TaskCard(props) {
                     placeholder="Title"
                     fullWidth
                     size="small"
+                    onFocus={() => setExpanded(true)}
+                    onBlur={() => setExpanded(false)}
                 ></TextField>
             </CardContent>
             <Collapse in={expanded} timeout="auto" unmountOnExit>
