@@ -9,7 +9,10 @@ function KanbanBoard({ tasks }) {
     console.log("tasks", tasks);
 
     return (
-        <></>
+        <>
+          {/* <div title= {"TO DO"} task={incomplete} id={"1"}></div> */}
+          {/* <button>ADD COLUMN</button> */}
+        </>
     );
 };
 
