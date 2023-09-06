@@ -18,7 +18,7 @@ const columnStyles = {
         padding:'20px',
     },
 };
-//droppable component
+
  export function ColumnContainer(props) {
     const columns = [
         { id: 'todo', title: 'PENDING', status: 'Pending' },
@@ -34,12 +34,14 @@ const columnStyles = {
                    <Grid key={column.id} item xs={12} sm={4}>
                        <Paper elevation={3} sx={columnStyles.column}>
                        <Typography variant='h4'>{column.title}<hr/></Typography> 
+                       {/* Filter through my task.  If the status of the task matches the status of the 
+                       column, it will be placed in that column */}
                        {props.tasks
                 .filter((task) => task.status === column.status)
                 .map((task) => (
-                  <div key={task.id}>
+                  <Box>
                     <TaskCard task={task} />
-                  </div>
+                  </Box>
                 ))}
                        </Paper>
                    </Grid>
