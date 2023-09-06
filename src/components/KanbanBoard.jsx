@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-import { DndContext } from '@dnd-kit/core';
 import { ColumnContainer } from './ColumnContainer';
 import { Container, Grid } from '@mui/material';
 
 function KanbanBoard(props) {
-  const [parent, setParent] = useState(null);
   const [tasks, setTasks] = useState(props.tasks);
 
   const columns = [
