@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { Button, Box, Card } from "@mui/material";
 import KanbanBoard from "../../components/KanbanBoard";
-import { TaskCard } from "@/components/TaskCard";
-import { ColumnContainer } from "@/components/ColumnContainer";
+import { useRouter } from "next/router";
+// import { TaskCard } from "@/components/TaskCard";
+// import { ColumnContainer } from "@/components/ColumnContainer";
 
 export default function Tasks() {
   //useState to update tasks to an array that is fetched from the the api in function fetchTask()
@@ -15,20 +14,20 @@ export default function Tasks() {
     const response = await fetch("/api/tasks");
     const data = await response.json();
     setTasks(data);
-    console.log("tasks", tasks);
+    console.log("tasks: ", tasks);
   }
 
   useEffect(() => {
     fetchTask();
   }, []);
 
-  console.log(tasks[0]);
+  console.log("tasks length", tasks.length);
   return (
     <>
-      {/* <KanbanBoard tasks={tasks}></KanbanBoard>  */}
+      {tasks.length > 0 && <KanbanBoard tasks={tasks} />}
       {/* Insert ColumnContainer.jsx here */}
-      <ColumnContainer tasks={tasks} />
-      {/* {tasks[0] && <TaskCard task={tasks[0]} />}*/}
+      {/* <ColumnContainer tasks={tasks} /> */}
+      {/* {tasks[0] && <TaskCard task={tasks[0]} />} */}
     </>
   );
 }
