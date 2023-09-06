@@ -25,16 +25,10 @@ export default function Tasks() {
   console.log(tasks[0]);
   return (
     <>
-       {/* <KanbanBoard tasks={tasks}></KanbanBoard>  */}
+      {/* <KanbanBoard tasks={tasks}></KanbanBoard>  */}
       {/* Insert ColumnContainer.jsx here */}
-      <Box>
-       <ColumnContainer tasks={tasks}/>
-       
-       
-        {/* {tasks[0] && <TaskCard task={tasks[0]} />}          */}
-      
-      </Box>
-      
-  </>
+      <ColumnContainer tasks={tasks} />
+      {/* {tasks[0] && <TaskCard task={tasks[0]} />}*/}
+    </>
   );
 }

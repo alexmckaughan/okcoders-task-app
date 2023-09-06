@@ -11,7 +11,6 @@ function KanbanBoard({ tasks }) {
     return (
         <>
           {/* <div title= {"TO DO"} task={incomplete} id={"1"}></div> */}
-          {/* <button>ADD COLUMN</button> */}
         </>
     );
 };
