@@ -39,8 +39,8 @@ const columnStyles = {
                        {props.tasks
                 .filter((task) => task.status === column.status)
                 .map((task) => (
-                  <Box>
-                    <TaskCard task={task} />
+                  <Box key={task._id}>
+                    <TaskCard  task={task} />
                   </Box>
                 ))}
                        </Paper>
@@ -50,42 +50,7 @@ const columnStyles = {
         </Container>
     )
 }
-//     //Makes the component a droppable area
-//     const {setNodeRef, isOver } = useDroppable({
-//         id: props.id,
-//         data: {
-//           index: props.index,
-//         },
-//       });
-    
-//        const filteredTasks = props.tasks.filter((task) => task.status === props.status);
-//       //will handle updates to task
-//       const handleUpdateTask = (updatedTask) =>{
-// console.log("handle updated task")
-//       } 
 
-//     return (
-//         <>
-//         {/* background color changes if it is being dragged over */}
-//           <Box ref={setNodeRef}
-//           style={{
-//             backgroundColor: isOver ? 'lightblue' : 'white',
-//           }}>
-           
-//             <Container>
-//              <Typography variant='h4'>{props.title}</Typography>
-//              {filteredTasks.map((task, index) => (
-//           <TaskCard key={index} task={task} onUpdateTask={handleUpdateTask} />
-//         ))}  
-        
-//            </Container> 
-           
-            
-            
-//             </Box>
-//             </>
-//     );
-// }
 
  
      
