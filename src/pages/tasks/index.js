@@ -21,7 +21,6 @@ export default function Tasks() {
     fetchTask();
   }, []);
 
-  console.log("tasks length", tasks.length);
   return (
     <>
       {tasks.length > 0 && <KanbanBoard tasks={tasks} />}
