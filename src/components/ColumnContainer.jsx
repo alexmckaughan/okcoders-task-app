@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import { 
     Box, 
     Container, 
@@ -66,9 +65,9 @@ export function ColumnContainer(props) {
      } catch (error) {
         console.error("Failed to add task.", error.message);
       }
-
+    
     };
-
+    
     const addTaskForm = (
         <Box>
             <TextField
@@ -131,7 +130,7 @@ export function ColumnContainer(props) {
                 {isVisible ? submitTaskButton : null}
                 {!isVisible ? addTaskButton : cancelTaskButton}
                 </form>
-
+                    
             </Paper>
         </Grid>
     );
