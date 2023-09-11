@@ -4,7 +4,9 @@ import {
     CardContent,
     Collapse,
     Stack,
+    Box,
     TextField,
+    Button
 } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -21,6 +23,26 @@ export function TaskCard(props) {
             ...prevTask,
             [property]: newValue,
         }));
+    };
+
+    const handleSaveTask = async () => {
+        try{
+            const response = await fetch(`/api/tasks/${task._id}`,{
+                method: "PUT",
+                headers:{
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(task),
+            });
+
+            if(response.ok){
+                console.log("update was successful")
+            } else {
+                prompt("error updating")
+            }
+        } catch (error){
+              console.log("unknown error")
+        }
     };
 
     return (
@@ -63,6 +85,11 @@ export function TaskCard(props) {
                             size="small"
                             maxRows={4}
                         />
+                        <Box sx={{display: "flex", justifyContent:"center"}}>
+                        <Button variant="outlined" onClick={handleSaveTask} size="small" sx={{  width: "10px" }}>
+                            Save
+                        </Button>
+                        </Box>
                     </Stack>
                 </CardContent>
             </Collapse>
