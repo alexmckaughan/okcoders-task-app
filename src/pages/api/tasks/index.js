@@ -16,7 +16,7 @@ export default async function handler(req, res) {
   } else if (req.method === "PUT") {
     try{
       // Parse the request body to get the updated task data
-      const { _id, description, status, title, due } = req.body;
+      const { _id, description, status, title } = req.body;
       //find the task by id
       const existingTask = await Task.findById(_id);
 
@@ -28,10 +28,11 @@ export default async function handler(req, res) {
       existingTask.description = description;
       existingTask.status = status;
       existingTask.title = title;
-      existingTask.due = due;
+      
       
       //Saving the updated task
       const updatedTask = await existingTask.save();
+      console.log("Task updated")
       res.status(200).json(updatedTask);
     } catch (error){
       res.status(500).json({ error: "Internal server error" });

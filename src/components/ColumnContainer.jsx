@@ -28,8 +28,8 @@ export function ColumnContainer(props) {
     description: "",
     status: "",
     due: "",
-    created: new Date(),
-    modified: new Date(),
+    // created: new Date(),
+    // modified: new Date(),
   });
 
   const handleInputChange = (event) => {
@@ -41,25 +41,25 @@ export function ColumnContainer(props) {
   };
 
   //Function to submit form data
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      //   const newTask = {
-      //     title: formData.title,
-      //     description: formData.description,
-      //     status: column.status,
-      //     due: formData.due,
-      //     created: new Date(),
-      //     modified: new Date(),
-      //   };
+     try {
+         const newTask = {
+            title: formData.title,
+            description: formData.description,
+            status: column.status,
+            due: formData.due,
+            created: new Date(),
+            modified: new Date(),
+         };
 
       const response = await fetch("/api/tasks", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(newTask),
       });
       const data = await response.json();
       router.push("/");
