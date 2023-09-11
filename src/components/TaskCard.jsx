@@ -48,6 +48,8 @@ export function TaskCard(props) {
     return (
         <Card
             sx={{ maxWidth: 345 }}
+            onFocus={() => setExpanded(true)}
+            onBlur={() => setExpanded(false)}
         >
             <CardContent
                 sx={{
@@ -62,8 +64,6 @@ export function TaskCard(props) {
                     placeholder="Title"
                     fullWidth
                     size="small"
-                    onFocus={() => setExpanded(true)}
-                    onBlur={() => setExpanded(false)}
                 ></TextField>
             </CardContent>
             <Collapse in={expanded} timeout="auto" unmountOnExit>
