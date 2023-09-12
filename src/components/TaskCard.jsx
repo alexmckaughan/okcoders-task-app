@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
     Card,
     CardContent,
@@ -40,7 +40,7 @@ export function TaskCard(props) {
             });
 
             if(response.ok){
-                console.log(`task: ${task.title} was updated successfully in the handleSaveTask function`)
+                console.log(`${task.title} was updated successfully in the handleSaveTask function`)
             } else {
                 prompt("error updating")
             }
@@ -70,7 +70,9 @@ export function TaskCard(props) {
                     onBlur={() => setExpanded(false)}
                 ></TextField>
             </CardContent>
-            <Collapse in={expanded} timeout="auto" unmountOnExit>
+            <Collapse in={expanded}  timeout="auto" unmountOnExit = {false} >
+                {/* By adding this div around the CardContent I was able to click on the calender in order to update task due dates */}
+                <Box sx={{ pointerEvents: "auto" }}>
                 <CardContent>
                     <Stack spacing={2}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -88,6 +90,8 @@ export function TaskCard(props) {
                             fullWidth
                             size="small"
                             maxRows={4}
+                            // Attempted to fix the issue with card collapsing when being clicked
+                         inputProps={{ disabled: !expanded }}
                         />
                         <Box sx={{display: "flex", justifyContent:"center"}}>
                         <Button variant="outlined" onClick={handleSaveTask} size="small" sx={{  width: "10px" }}>
@@ -96,6 +100,7 @@ export function TaskCard(props) {
                         </Box>
                     </Stack>
                 </CardContent>
+                </Box>
             </Collapse>
         </Card>
     );
