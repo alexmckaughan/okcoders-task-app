@@ -11,11 +11,15 @@ import {
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+
 import dayjs from 'dayjs';
 
 export function TaskCard(props) {
+    
     const [expanded, setExpanded] = useState(false);
     const [task, setTask] = useState(props.task);
+
+  
 
     const handleInputChange = (property, e) => {
         const newValue = e.target.value;
@@ -27,7 +31,7 @@ export function TaskCard(props) {
 
     const handleSaveTask = async () => {
         try{
-            const response = await fetch(`/api/tasks/${task._id}`,{
+            const response = await fetch("/api/tasks/", {
                 method: "PUT",
                 headers:{
                     "Content-Type": "application/json",
@@ -36,7 +40,7 @@ export function TaskCard(props) {
             });
 
             if(response.ok){
-                console.log("update was successful")
+                console.log(`${task.title} was updated successfully in the handleSaveTask function`)
             } else {
                 prompt("error updating")
             }
@@ -66,7 +70,9 @@ export function TaskCard(props) {
                     size="small"
                 ></TextField>
             </CardContent>
-            <Collapse in={expanded} timeout="auto" unmountOnExit>
+            <Collapse in={expanded}  timeout="auto" unmountOnExit = {false} >
+                {/* By adding this div around the CardContent I was able to click on the calender in order to update task due dates */}
+                <Box sx={{ pointerEvents: "auto" }}>
                 <CardContent>
                     <Stack spacing={2}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -84,6 +90,8 @@ export function TaskCard(props) {
                             fullWidth
                             size="small"
                             maxRows={4}
+                            // Attempted to fix the issue with card collapsing when being clicked
+                         inputProps={{ disabled: !expanded }}
                         />
                         <Box sx={{display: "flex", justifyContent:"center"}}>
                         <Button variant="outlined" onClick={handleSaveTask} size="small" sx={{  width: "10px" }}>
@@ -92,6 +100,7 @@ export function TaskCard(props) {
                         </Box>
                     </Stack>
                 </CardContent>
+                </Box>
             </Collapse>
         </Card>
     );
