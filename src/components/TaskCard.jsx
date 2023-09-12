@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Card,
     CardContent,
@@ -11,11 +11,15 @@ import {
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+
 import dayjs from 'dayjs';
 
 export function TaskCard(props) {
+    
     const [expanded, setExpanded] = useState(false);
     const [task, setTask] = useState(props.task);
+
+  
 
     const handleInputChange = (property, e) => {
         const newValue = e.target.value;
@@ -27,7 +31,7 @@ export function TaskCard(props) {
 
     const handleSaveTask = async () => {
         try{
-            const response = await fetch(`/api/tasks/${task._id}`,{
+            const response = await fetch("/api/tasks/", {
                 method: "PUT",
                 headers:{
                     "Content-Type": "application/json",
@@ -36,7 +40,7 @@ export function TaskCard(props) {
             });
 
             if(response.ok){
-                console.log("update was successful")
+                console.log(`task: ${task.title} was updated successfully in the handleSaveTask function`)
             } else {
                 prompt("error updating")
             }
