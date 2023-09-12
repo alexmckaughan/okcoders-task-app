@@ -18,7 +18,6 @@ export function TaskCard(props) {
     
     const [expanded, setExpanded] = useState(false);
     const [task, setTask] = useState(props.task);
-
   
 
     const handleInputChange = (property, e) => {
@@ -46,6 +45,28 @@ export function TaskCard(props) {
             }
         } catch (error){
               console.log("unknown error")
+        }
+    };
+    const handleDeleteTask = async () => {
+        try {
+            const response = await fetch(`/api/tasks/${task._id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                
+            });
+            if (response.status === 200) {
+                alert(`"${task.title}" was deleted successfully`);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const handleDeleteAlert = () => {
+        if (window.confirm('Are you sure you want to delete this task?')) {
+            handleDeleteTask();
         }
     };
 
@@ -90,12 +111,13 @@ export function TaskCard(props) {
                             fullWidth
                             size="small"
                             maxRows={4}
-                            // Attempted to fix the issue with card collapsing when being clicked
-                         inputProps={{ disabled: !expanded }}
                         />
                         <Box sx={{display: "flex", justifyContent:"center"}}>
                         <Button variant="outlined" onClick={handleSaveTask} size="small" sx={{  width: "10px" }}>
                             Save
+                        </Button>
+                        <Button onClick={handleDeleteAlert} size="small" sx={{  width: "10px" }}>
+                            Delete
                         </Button>
                         </Box>
                     </Stack>

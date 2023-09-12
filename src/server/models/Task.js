@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { model } from "mongoose";
 
 const TaskSchema = new mongoose.Schema({
   title: { type: String, required: true },
