@@ -39,7 +39,6 @@ export default function Tasks() {
 
   return (
     <>
-    <div>This is to just test whether the whole page is reloaded or the task</div>
       {tasks.length > 0 && <KanbanBoard tasks={tasks} />}
       {/* Insert ColumnContainer.jsx here */}
       {/* <ColumnContainer tasks={tasks} /> */}
