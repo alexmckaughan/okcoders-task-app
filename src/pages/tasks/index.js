@@ -10,12 +10,28 @@ export default function Tasks() {
   const router = useRouter();
 
   //fetching the tasks from api/tasks and putting the results into variable response
+  
   async function fetchTask() {
-    const response = await fetch("/api/tasks");
-    const data = await response.json();
-    setTasks(data);
-    console.log("tasks: ", tasks);
+    try {
+      const response = await fetch("/api/tasks");
+      if (response.ok) {
+        const data = await response.json();
+        setTasks(data);
+        console.log("tasks: ", tasks);
+      } else {
+        console.error("API request failed");
+      }
+    } catch (error) {
+      console.error("Unknown error", error);
+    }
   }
+  
+  // async function fetchTask() {
+  //   const response = await fetch("/api/tasks");
+  //   const data = await response.json();
+  //   setTasks(data);
+  //   console.log("tasks: ", tasks);
+  // }
 
   useEffect(() => {
     fetchTask();
@@ -23,6 +39,7 @@ export default function Tasks() {
 
   return (
     <>
+    <div>This is to just test whether the whole page is reloaded or the task</div>
       {tasks.length > 0 && <KanbanBoard tasks={tasks} />}
       {/* Insert ColumnContainer.jsx here */}
       {/* <ColumnContainer tasks={tasks} /> */}

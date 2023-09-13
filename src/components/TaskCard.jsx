@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { use, useState } from 'react';
 import {
     Card,
     CardContent,
@@ -18,7 +18,7 @@ export function TaskCard(props) {
     
     const [expanded, setExpanded] = useState(false);
     const [task, setTask] = useState(props.task);
-  
+    
 
     const handleInputChange = (property, e) => {
         const newValue = e.target.value;
@@ -28,6 +28,7 @@ export function TaskCard(props) {
         }));
     };
 
+    //Save task function
     const handleSaveTask = async () => {
         try{
             const response = await fetch("/api/tasks/", {
@@ -40,6 +41,9 @@ export function TaskCard(props) {
 
             if(response.ok){
                 console.log(`${task.title} was updated successfully in the handleSaveTask function`)
+                const createdTask = await response.json();
+                
+
             } else {
                 prompt("error updating")
             }
@@ -47,6 +51,8 @@ export function TaskCard(props) {
               console.log("unknown error")
         }
     };
+
+    //Delete task function
     const handleDeleteTask = async () => {
         try {
             console.log(task._id);
@@ -63,8 +69,11 @@ export function TaskCard(props) {
                 },
                 
             });
+
             if (response.status === 200) {
                 alert(`"${task.title}" was deleted successfully`);
+               
+                // window.location.reload();
             }
         } catch (err) {
             console.error(err);
@@ -76,7 +85,6 @@ export function TaskCard(props) {
             handleDeleteTask();
         }
     };
-
     return (
         <Card
             sx={{ maxWidth: 345 }}

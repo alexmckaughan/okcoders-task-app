@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ColumnContainer } from './ColumnContainer';
 import { Container, Grid } from '@mui/material';
 
 function KanbanBoard(props) {
   const [tasks, setTasks] = useState(props.tasks);
+
+  useEffect(() => {
+    setTasks(props.tasks);
+  }, [props.tasks]);
 
   const columns = [
     { id: "todo", title: "PENDING", status: "Pending" },
