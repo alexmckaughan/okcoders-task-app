@@ -3,6 +3,7 @@ import dbConnect from "../../../server/db";
 import Task from "../../../server/models/Task";
 
 export default async function handler(req, res) {
+  console.log("API request received");
   await dbConnect();
 
   if (req.method === "POST") {
@@ -39,6 +40,30 @@ export default async function handler(req, res) {
       console.log("Task updated")
       res.status(200).json(updatedTask);
     } catch (error){
+      res.status(500).json({ error: "Internal server error" });
+      console.error(error);
+    }
+  } else if (req.method === "DELETE") {
+    try {
+      const taskId = req.query.id;
+      console.log(taskId);
+      const taskTitle = req.query.title;
+      console.log(taskTitle);
+
+      if (!taskId) {
+        res.status(400).json({ error: "Missing task id" });
+        return;
+      }
+
+      const deletedTask = await Task.findByIdAndDelete(taskId);
+
+      if (!deletedTask) {
+        res.status(404).json({ error: "Task not found" });
+        return;
+      }
+
+      res.status(200).json({ message: `"${taskTitle}" deleted successfully` });
+    } catch (error) {
       res.status(500).json({ error: "Internal server error" });
       console.error(error);
     }

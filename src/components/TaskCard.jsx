@@ -49,7 +49,14 @@ export function TaskCard(props) {
     };
     const handleDeleteTask = async () => {
         try {
-            const response = await fetch(`/api/tasks/${task._id}`, {
+            console.log(task._id);
+            console.log(task)
+            if (!task._id) {
+                console.error('Task does not have an id');
+                return;
+            }
+
+            const response = await fetch(`/api/tasks?id=${task._id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
