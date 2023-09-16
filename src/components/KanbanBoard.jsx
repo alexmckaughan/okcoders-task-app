@@ -1,13 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { ColumnContainer } from './ColumnContainer';
 import { Container, Grid } from '@mui/material';
 
 function KanbanBoard(props) {
-  const [tasks, setTasks] = useState(props.tasks);
 
-  useEffect(() => {
-    setTasks(props.tasks);
-  }, [props.tasks]);
+  console.log("props.tasks", props.tasks);
 
   const columns = [
     { id: "todo", title: "PENDING", status: "Pending" },
@@ -33,7 +30,7 @@ function KanbanBoard(props) {
     <Container sx={columnStyles.container}>
       <Grid container spacing={2} sx={{ flexGrow: 1 }}>
         {columns.map((column) => (
-          <ColumnContainer key={column.id} column={column} tasks={tasks} columnStyles={columnStyles} />
+          <ColumnContainer key={column.id} column={column} tasks={props.tasks} fetchTasks={props.fetchTasks} columnStyles={columnStyles} />
         ))}
       </Grid>
     </Container>

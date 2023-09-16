@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Box,
-  Container,
   Typography,
   Grid,
   Paper,
-  FormControl,
   Input,
   InputLabel,
   Button,
@@ -40,20 +38,19 @@ export function ColumnContainer(props) {
     });
   };
 
-  //Function to submit form data
   const handleSubmit = async (e) => {
 
-     try {
-         const newTask = {
-            title: formData.title,
-            description: formData.description,
-            status: column.status,
-            due: formData.due,
-            created: new Date(),
-            modified: new Date(),
-         };
+    try {
+      const newTask = {
+        title: formData.title,
+        description: formData.description,
+        status: column.status,
+        due: formData.due,
+        created: new Date(),
+        modified: new Date(),
+      };
 
-         
+
       const response = await fetch("/api/tasks", {
         method: "POST",
         headers: {
@@ -63,35 +60,23 @@ export function ColumnContainer(props) {
       });
 
 
-         if (response.ok) {
-          // Task was successfully added to the server, update the local state
-          const createdTask = await response.json();
-          setTasks((prevTasks) => [...prevTasks, createdTask]); // Add the new task to the local state
-          setIsVisible(false); // Hide the form
-          // Clear form data or reset the form as needed
-          setFormData({
-            title: "",
-            description: "",
-            status: "",
-            due: "",
-          });
-        } else {
-          console.error("Error adding task");
-        }
-      } catch (error) {
-        console.error("Unknown error", error);
+      if (response.ok) {
+        const createdTask = await response.json();
+        setTasks((prevTasks) => [...prevTasks, createdTask]);
+        setIsVisible(false);
+        setFormData({
+          title: "",
+          description: "",
+          status: "",
+          due: "",
+        });
+      } else {
+        console.error("Error adding task");
       }
-    };
-
-
-    //   const data = await response.json();
-    //   router.push("/");
-    // } catch (e) {
-    //   console.log("error",e);
-    // }
-
-    // window.location.reload();
-    // };
+    } catch (error) {
+      console.error("Unknown error", error);
+    }
+  };
 
   const addTaskForm = (
     <Box>
@@ -156,7 +141,7 @@ export function ColumnContainer(props) {
           .filter((task) => task.status === column.status)
           .map((task) => (
             <Box key={task._id}>
-              <TaskCard task={task} />
+              <TaskCard task={task} fetchTasks={props.fetchTasks} />
             </Box>
           ))}
         <form>

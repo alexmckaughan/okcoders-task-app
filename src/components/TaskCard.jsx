@@ -1,4 +1,4 @@
-import React, { use, useState } from 'react';
+import React, { useState } from 'react';
 import {
     Card,
     CardContent,
@@ -15,14 +15,15 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 
 export function TaskCard(props) {
-    
+
+    const { task, fetchTasks } = props;
     const [expanded, setExpanded] = useState(false);
-    const [task, setTask] = useState(props.task);
-    
+    const [localTask, setLocalTask] = useState(task);
+
 
     const handleInputChange = (property, e) => {
         const newValue = e.target.value;
-        setTask((prevTask) => ({
+        setLocalTask((prevTask) => ({
             ...prevTask,
             [property]: newValue,
         }));
@@ -30,49 +31,49 @@ export function TaskCard(props) {
 
     //Save task function
     const handleSaveTask = async () => {
-        try{
+        try {
             const response = await fetch("/api/tasks/", {
                 method: "PUT",
-                headers:{
+                headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(task),
+                body: JSON.stringify(localTask),
             });
 
-            if(response.ok){
-                console.log(`${task.title} was updated successfully in the handleSaveTask function`)
+            if (response.ok) {
+                console.log(`${localTask.title} was updated successfully in the handleSaveTask function`)
                 const createdTask = await response.json();
-                
+
 
             } else {
                 prompt("error updating")
             }
-        } catch (error){
-              console.log("unknown error")
+        } catch (error) {
+            console.log("unknown error")
         }
     };
 
     //Delete task function
     const handleDeleteTask = async () => {
         try {
-            console.log(task._id);
-            console.log(task)
-            if (!task._id) {
+            console.log(localTask._id);
+            console.log(localTask)
+            if (!localTask._id) {
                 console.error('Task does not have an id');
                 return;
             }
 
-            const response = await fetch(`/api/tasks?id=${task._id}`, {
+            const response = await fetch(`/api/tasks?id=${localTask._id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                
+
             });
 
             if (response.status === 200) {
-                alert(`"${task.title}" was deleted successfully`);
-               
+                alert(`"${localTask.title}" was deleted successfully`);
+                fetchTasks();
                 // window.location.reload();
             }
         } catch (err) {
@@ -99,44 +100,44 @@ export function TaskCard(props) {
                 }}
             >
                 <TextField
-                    value={task.title}
+                    value={localTask.title}
                     onChange={(e) => handleInputChange('title', e)}
                     placeholder="Title"
                     fullWidth
                     size="small"
                 ></TextField>
             </CardContent>
-            <Collapse in={expanded}  timeout="auto" unmountOnExit = {false} >
+            <Collapse in={expanded} timeout="auto" unmountOnExit={false} >
                 {/* By adding this div around the CardContent I was able to click on the calender in order to update task due dates */}
                 <Box sx={{ pointerEvents: "auto" }}>
-                <CardContent>
-                    <Stack spacing={2}>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DatePicker
-                                value={dayjs(task.due)}
-                                onChange={(date) => setTask(prev => ({ ...prev, due: date.toISOString() }))}
-                                slotProps={{ textField: { fullWidth: true, size: 'small' } }}
+                    <CardContent>
+                        <Stack spacing={2}>
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker
+                                    value={dayjs(localTask.due)}
+                                    onChange={(date) => setLocalTask(prev => ({ ...prev, due: date.toISOString() }))}
+                                    slotProps={{ textField: { fullWidth: true, size: 'small' } }}
+                                />
+                            </LocalizationProvider>
+                            <TextField
+                                value={localTask.description}
+                                onChange={(e) => handleInputChange('description', e)}
+                                placeholder="Description"
+                                multiline
+                                fullWidth
+                                size="small"
+                                maxRows={4}
                             />
-                        </LocalizationProvider>
-                        <TextField
-                            value={task.description}
-                            onChange={(e) => handleInputChange('description', e)}
-                            placeholder="Description"
-                            multiline
-                            fullWidth
-                            size="small"
-                            maxRows={4}
-                        />
-                        <Box sx={{display: "flex", justifyContent:"center"}}>
-                        <Button variant="outlined" onClick={handleSaveTask} size="small" sx={{  width: "10px" }}>
-                            Save
-                        </Button>
-                        <Button onClick={handleDeleteAlert} size="small" sx={{  width: "10px" }}>
-                            Delete
-                        </Button>
-                        </Box>
-                    </Stack>
-                </CardContent>
+                            <Box sx={{ display: "flex", justifyContent: "center" }}>
+                                <Button variant="outlined" onClick={handleSaveTask} size="small" sx={{ width: "10px" }}>
+                                    Save
+                                </Button>
+                                <Button onClick={handleDeleteAlert} size="small" sx={{ width: "10px" }}>
+                                    Delete
+                                </Button>
+                            </Box>
+                        </Stack>
+                    </CardContent>
                 </Box>
             </Collapse>
         </Card>
