@@ -13,7 +13,7 @@ export default function Tasks() {
 
   async function fetchTasks() {
     try {
-      const response = await fetch("/api/projects");
+      const response = await fetch("/api/tasks");
       if (response.ok) {
         const data = await response.json();
         setTasks(data);
