@@ -1,4 +1,4 @@
-import { Box, Button, Container, FormControl, FormControlLabel, FormGroup, FormHelperText, Input, InputLabel, Stack, TextField, Typography }  from "@mui/material";
+import { Button, Container, FormControl, FormHelperText, Input, InputLabel, Stack, Typography }  from "@mui/material";
 import { useState } from "react";
 import { useRouter } from "next/router";
 
@@ -13,7 +13,7 @@ export default function Login() {
     const handleSubmit = e => {
 		e.preventDefault();
 		console.log(formData);
-        router.push(`/tasks`);
+        router.push(`/projects`);
 	};
 
     return (

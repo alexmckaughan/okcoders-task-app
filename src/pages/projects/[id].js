@@ -10,7 +10,7 @@ export default function taskByIdPage() {
   const [tasks, setTasks] = useState({});
 
   async function fetchTask() {
-    const response = await fetch(`/api/tasks/${id}`);
+    const response = await fetch(`/api/projects/${id}`);
     const data = await response.json();
     setTasks(data);
   }
