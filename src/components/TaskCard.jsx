@@ -73,7 +73,8 @@ export function TaskCard(props) {
 
             if (response.status === 200) {
                 alert(`"${localTask.title}" was deleted successfully`);
-                fetchTasks();
+                // I'm not sure if the "fetchTasks()" function is being executed, it might not be declared properly. props.fetchTasks is not working either.
+                // fetchTasks();
                 // window.location.reload();
             }
         } catch (err) {

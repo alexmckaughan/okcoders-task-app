@@ -6,6 +6,7 @@ function KanbanBoard(props) {
 
   console.log("props.tasks", props.tasks);
 
+  // columns will need to be pulled from props.project.statuses
   const columns = [
     { id: "todo", title: "PENDING", status: "Pending" },
     { id: "inProgress", title: "IN PROGRESS", status: "In Progress" },
