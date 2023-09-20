@@ -8,9 +8,14 @@ import {
   InputLabel,
   Button,
   TextField,
+  Stack,
 } from "@mui/material";
 import { TaskCard } from "./TaskCard";
 import { useRouter } from "next/router";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
 
 export function ColumnContainer(props) {
   const router = useRouter();
@@ -79,55 +84,72 @@ export function ColumnContainer(props) {
   };
 
   const addTaskForm = (
-    <Box>
-      <TextField
-        id="title"
-        name="title"
-        label="Title"
-        variant="outlined"
-        fullWidth
-        required
-        size="large"
-        value={formData.title}
-        onChange={handleInputChange}
-      />
+      <Paper>
+      <Box>
+        <TextField
+          id="title"
+          name="title"
+          label="Title"
+          variant="outlined"
+          fullWidth
+          required
+          size="small"
+          value={formData.title}
+          onChange={handleInputChange}
+          />
 
-      <TextField
-        id="description"
-        name="description"
-        label="Description"
-        variant="outlined"
-        fullWidth
-        multiline
-        rows={4}
-        size="large"
-        value={formData.description}
-        onChange={handleInputChange}
-      />
+        <InputLabel htmlFor="due">Due Date</InputLabel>
 
-      <InputLabel htmlFor="due">Due Date</InputLabel>
-      <Input
-        id="due"
-        name="due"
-        label="Due Date"
-        variant="outlined"
-        fullWidth
-        type="date"
-        size="large"
-        value={formData.due}
-        onChange={handleInputChange}
-      />
-    </Box>
+        {/* //Code to replace current date picker. */}
+
+        {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <DatePicker
+          label="Due Date"
+          type="date"
+          id="due"
+          name="due"
+          value={dayjs()}
+          onChange={handleInputChange}
+          slotProps={{ textField: { fullWidth: true, size: 'small' }}}
+        />
+        </LocalizationProvider> */}
+
+        <Input
+          id="due"
+          name="due"
+          label="Due Date"
+          variant="outlined"
+          fullWidth
+          type="date"
+          size="large"
+          value={new Date()}
+          onChange={handleInputChange}
+          />
+
+        <TextField
+          id="description"
+          name="description"
+          label="Description"
+          variant="outlined"
+          fullWidth
+          multiline
+          rows={4}
+          size="small"
+          value={formData.description}
+          onChange={handleInputChange}
+          />
+      </Box>
+          </Paper>
   );
 
   const addTaskButton = (
     <Button onClick={() => setIsVisible(!isVisible)}>Add Task</Button>
   );
   const cancelTaskButton = (
-    <Button onClick={() => setIsVisible(!isVisible)}>Cancel</Button>
+    <Button size="small" onClick={() => setIsVisible(!isVisible)}>Cancel</Button>
   );
   const submitTaskButton = (
-    <Button onClick={(e) => handleSubmit(e)}>Submit</Button>
+    <Button variant="outlined" size="small" onClick={(e) => handleSubmit(e)}>Submit</Button>
   );
 
   return (
@@ -146,8 +168,10 @@ export function ColumnContainer(props) {
           ))}
         <form>
           {isVisible ? addTaskForm : null}
+         
           {isVisible ? submitTaskButton : null}
           {!isVisible ? addTaskButton : cancelTaskButton}
+    
         </form>
       </Paper>
     </Grid>
