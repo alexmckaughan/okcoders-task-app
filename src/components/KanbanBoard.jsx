@@ -3,15 +3,15 @@ import { ColumnContainer } from './ColumnContainer';
 import { Container, Grid } from '@mui/material';
 
 function KanbanBoard(props) {
-
-  console.log("props.tasks", props.tasks);
+  const [projectColumns, setProjectColumns] = React.useState([props.project.statuses]);
+  console.log("props.project", props.project);
 
   // columns will need to be pulled from props.project.statuses
-  const columns = [
-    { id: "todo", title: "PENDING", status: "Pending" },
-    { id: "inProgress", title: "IN PROGRESS", status: "In Progress" },
-    { id: "done", title: "COMPLETED", status: "Completed" },
-  ];
+  // const columns = [
+  //   { id: "todo", title: "PENDING", status: "Pending" },
+  //   { id: "inProgress", title: "IN PROGRESS", status: "In Progress" },
+  //   { id: "done", title: "COMPLETED", status: "Completed" },
+  // ];
 
   const columnStyles = {
     container: {
@@ -28,9 +28,10 @@ function KanbanBoard(props) {
   };
 
   return (
+
     <Container sx={columnStyles.container}>
       <Grid container spacing={2} sx={{ flexGrow: 1 }}>
-        {columns.map((column) => (
+        {projectColumns.map((column) => (
           <ColumnContainer key={column.id} column={column} tasks={props.tasks} fetchTasks={props.fetchTasks} columnStyles={columnStyles} />
         ))}
       </Grid>

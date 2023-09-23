@@ -1,15 +1,11 @@
 import { useEffect, useState } from "react";
 import KanbanBoard from "../../components/KanbanBoard";
 import { useRouter } from "next/router";
-// import { TaskCard } from "@/components/TaskCard";
-// import { ColumnContainer } from "@/components/ColumnContainer";
 
-export default function Tasks() {
-  //useState to update tasks to an array that is fetched from the the api in function fetchTasks()
+export default function Projects() {
   const [tasks, setTasks] = useState([]);
+  const [projects, setProjects] = useState([]);
   const router = useRouter();
-
-  //fetching the tasks from api/tasks and putting the results into variable response
 
   async function fetchTasks() {
     try {
@@ -17,7 +13,22 @@ export default function Tasks() {
       if (response.ok) {
         const data = await response.json();
         setTasks(data);
-        console.log("tasks: ", tasks);
+        console.log("data: ", data);
+      } else {
+        console.error("API request failed");
+      }
+    } catch (error) {
+      console.error("Unknown error", error);
+    }
+  }
+
+  async function fetchProjects() {
+    try {
+      const response = await fetch("/api/projects");
+      if (response.ok) {
+        const data = await response.json();
+        setProjects(data);
+        console.log("data: ", data);
       } else {
         console.error("API request failed");
       }
@@ -27,18 +38,19 @@ export default function Tasks() {
   }
 
   useEffect(() => {
-    console.log("tasks updated: ", tasks);
-  }, [tasks]);
-
-  useEffect(() => {
     fetchTasks();
+    fetchProjects();
   }, []);
 
   return (
     <>
-      {tasks.length > 0 && (
+      {/* {tasks.length > 0 && (
         <KanbanBoard tasks={tasks} fetchTasks={fetchTasks} />
-      )}
+      )} */}
+      {projects.length > 0 &&
+        projects.map((project) => {
+          <KanbanBoard project={project} />;
+        })}
       {/* Insert ColumnContainer.jsx here */}
       {/* <ColumnContainer tasks={tasks} /> */}
       {/* {tasks[0] && <TaskCard task={tasks[0]} />} */}
