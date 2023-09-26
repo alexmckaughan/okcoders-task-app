@@ -1,5 +1,7 @@
-import Tasks from "./projects";
+import Projects from "./projects";
 
 export default function Home() {
-  return <>{/* <Tasks />  */}</>;
+  return<>
+    <Projects/>
+  </>
 }
