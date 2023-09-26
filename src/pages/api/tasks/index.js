@@ -2,8 +2,10 @@
 import dbConnect from "../../../server/db";
 import Task from "../../../server/models/Task";
 import mongoose from "mongoose";
+import { getAuth } from "@clerk/nextjs/server"
 
 export default async function handler(req, res) {
+  const { userId } = getAuth(req);
   console.log("API request received");
   await dbConnect();
 

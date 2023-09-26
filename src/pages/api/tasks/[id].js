@@ -1,6 +1,9 @@
  import dbConnect from "../../../server/db";
- import Task from "../../../server/models/Task"
+ import Task from "../../../server/models/Task";
+ import { getAuth } from "@clerk/nextjs/server";
+
  export default async function taskById(req, res) {
+  const { userId } = getAuth(req);
    //getting the id for the backend
    const { id } = req.query
    //query the database

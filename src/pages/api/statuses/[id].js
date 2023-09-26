@@ -1,6 +1,9 @@
 import dbConnect from "../../../server/db";
 import Status from "../../../server/models/Status";
+import { getAuth } from "@clerk/nextjs/server";
+
 export default async function statusById(req, res) {
+  const { userId } = getAuth(req);
   //getting the id for the backend
   const { id } = req.query;
   //query the database
