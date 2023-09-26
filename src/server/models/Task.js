@@ -15,6 +15,8 @@ const TaskSchema = new mongoose.Schema(
     title: { type: String, required: true },
     description: { type: String, required: true },
     due: { type: Date, required: true },
+    createdBy: {type: String, required: false},
+    modifiedBy: {type: String, required: false},
     //   priority: { type: String, required: true },
     //   tags: { type: Array, required: true },
     //   subtasks: { type: Array, required: true },
