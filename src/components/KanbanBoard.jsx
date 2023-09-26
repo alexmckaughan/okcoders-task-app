@@ -1,17 +1,38 @@
-import React from 'react';
-import { ColumnContainer } from './ColumnContainer';
-import { Container, Grid } from '@mui/material';
+import React, { useEffect, useState } from "react";
+import { ColumnContainer } from "./ColumnContainer";
+import { Container, Grid } from "@mui/material";
 
 function KanbanBoard(props) {
-  const [projectColumns, setProjectColumns] = React.useState([props.project.statuses]);
-  console.log("props.project", props.project);
+  const [tasks, setTasks] = useState([]);
+  const [projectColumns, setProjectColumns] = useState([]);
 
-  // columns will need to be pulled from props.project.statuses
-  // const columns = [
-  //   { id: "todo", title: "PENDING", status: "Pending" },
-  //   { id: "inProgress", title: "IN PROGRESS", status: "In Progress" },
-  //   { id: "done", title: "COMPLETED", status: "Completed" },
-  // ];
+  async function fetchTasks() {
+    const projectId = props.project._id;
+    const response = await fetch(`/api/tasks?projectId=${projectId}`);
+    if (response.ok) {
+      const data = await response.json();
+      console.log("Fetched tasks:", data);
+      setTasks(data);
+    } else {
+      console.error("API request failed");
+    }
+  }
+
+  async function fetchStatuses() {
+    const projectId = props.project._id;
+    const response = await fetch(`/api/statuses?projectId=${projectId}`);
+    if (response.ok) {
+      const data = await response.json();
+      setProjectColumns(data);
+    } else {
+      console.error("API request failed");
+    }
+  }
+
+  useEffect(() => {
+    fetchTasks();
+    fetchStatuses();
+  }, [props.project._id]);
 
   const columnStyles = {
     container: {
@@ -27,16 +48,26 @@ function KanbanBoard(props) {
     },
   };
 
-  return (
+  console.log("Tasks for each column: ", projectColumns.map(column => tasks.filter(task => task.status === column.label)));
 
+
+  return (
     <Container sx={columnStyles.container}>
       <Grid container spacing={2} sx={{ flexGrow: 1 }}>
         {projectColumns.map((column) => (
-          <ColumnContainer key={column.id} column={column} tasks={props.tasks} fetchTasks={props.fetchTasks} columnStyles={columnStyles} />
+          <ColumnContainer
+            key={column._id}
+            column={column}
+            tasks={tasks.filter(task => task.status === column._id)}
+            fetchTasks={fetchTasks}
+            columnStyles={columnStyles}
+            project={props.project}
+            status={column}
+          />
         ))}
       </Grid>
     </Container>
   );
-};
+}
 
 export default KanbanBoard;

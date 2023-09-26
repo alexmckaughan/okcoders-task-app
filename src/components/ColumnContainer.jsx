@@ -4,176 +4,62 @@ import {
   Typography,
   Grid,
   Paper,
-  Input,
-  InputLabel,
   Button,
-  TextField,
-  Stack,
 } from "@mui/material";
 import { TaskCard } from "./TaskCard";
 import { useRouter } from "next/router";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import dayjs from "dayjs";
 
 export function ColumnContainer(props) {
   const router = useRouter();
   const { id } = router.query;
-  const [columnStyles, setColumnStyles] = useState(props.columnStyles);
-  const [column, setColumn] = useState(props.column);
-  const [tasks, setTasks] = useState(props.tasks);
-  const [isVisible, setIsVisible] = useState(false);
 
-  //State to store form input values
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    status: "",
-    due: "",
-    // created: new Date(),
-    // modified: new Date(),
-  });
+  const [showNewTask, setShowNewTask] = useState(false);
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+  const handleCreateNewTask = (newTask) => {
+    props.tasks.push(newTask);
+    setShowNewTask(false);
   };
 
-  const handleSubmit = async (e) => {
-
-    try {
-      const newTask = {
-        title: formData.title,
-        description: formData.description,
-        status: column.status,
-        due: formData.due,
-        created: new Date(),
-        modified: new Date(),
-      };
-
-
-      const response = await fetch("/api/tasks", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newTask),
-      });
-
-
-      if (response.ok) {
-        const createdTask = await response.json();
-        setTasks((prevTasks) => [...prevTasks, createdTask]);
-        setIsVisible(false);
-        setFormData({
-          title: "",
-          description: "",
-          status: "",
-          due: "",
-        });
-      } else {
-        console.error("Error adding task");
-      }
-    } catch (error) {
-      console.error("Unknown error", error);
-    }
+  const handleCancelNewTask = () => {
+    setShowNewTask(false);
   };
 
-  const addTaskForm = (
-      <Paper>
-      <Box>
-        <TextField
-          id="title"
-          name="title"
-          label="Title"
-          variant="outlined"
-          fullWidth
-          required
-          size="small"
-          value={formData.title}
-          onChange={handleInputChange}
-          />
-
-        <InputLabel htmlFor="due">Due Date</InputLabel>
-
-        {/* //Code to replace current date picker. */}
-
-        {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker
-          label="Due Date"
-          type="date"
-          id="due"
-          name="due"
-          value={dayjs()}
-          onChange={handleInputChange}
-          slotProps={{ textField: { fullWidth: true, size: 'small' }}}
-        />
-        </LocalizationProvider> */}
-
-        <Input
-          id="due"
-          name="due"
-          label="Due Date"
-          variant="outlined"
-          fullWidth
-          type="date"
-          size="large"
-          value={new Date()}
-          onChange={handleInputChange}
-          />
-
-        <TextField
-          id="description"
-          name="description"
-          label="Description"
-          variant="outlined"
-          fullWidth
-          multiline
-          rows={4}
-          size="small"
-          value={formData.description}
-          onChange={handleInputChange}
-          />
-      </Box>
-          </Paper>
-  );
-
-  const addTaskButton = (
-    <Button onClick={() => setIsVisible(!isVisible)}>Add Task</Button>
-  );
-  const cancelTaskButton = (
-    <Button size="small" onClick={() => setIsVisible(!isVisible)}>Cancel</Button>
-  );
-  const submitTaskButton = (
-    <Button variant="outlined" size="small" onClick={(e) => handleSubmit(e)}>Submit</Button>
-  );
+  const handleDeleteTask = (deletedTaskId) => {
+    const updatedTasks = props.tasks.filter(task => task._id !== deletedTaskId);
+    props.fetchTasks(updatedTasks);
+  };
 
   return (
-    <Grid key={column.id} item xs={12} sm={4}>
-      <Paper elevation={3} sx={columnStyles.column}>
+    <Grid key={props.column._id} item xs={12} sm={4}>
+      <Paper elevation={3} sx={props.columnStyles.column}>
         <Typography variant="h4">
-          {column.title}
+          {props.column.label}
           <hr />
         </Typography>
-        {tasks
-          .filter((task) => task.status === column.status)
-          .map((task) => (
-            <Box key={task._id}>
-              <TaskCard task={task} fetchTasks={props.fetchTasks} />
-            </Box>
-          ))}
-        <form>
-          {isVisible ? addTaskForm : null}
-         
-          {isVisible ? submitTaskButton : null}
-          {!isVisible ? addTaskButton : cancelTaskButton}
-    
-        </form>
+        {props.tasks.map((task) => (
+          <Box key={task._id}>
+            <TaskCard
+              project={props.project}
+              status={props.status}
+              task={task}
+              fetchTasks={props.fetchTasks}
+              onDelete={handleDeleteTask}
+            />
+          </Box>
+        ))}
+        {showNewTask && (
+          <TaskCard
+            isNewTask
+            project={props.project}
+            status={props.status}
+            onCreate={handleCreateNewTask}
+            onCancel={handleCancelNewTask}
+          />
+        )}
+        <Button onClick={() => setShowNewTask(true)}>ADD</Button>
       </Paper>
     </Grid>
   );
 }
+
+export default ColumnContainer;

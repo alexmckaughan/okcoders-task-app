@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
     Card,
     CardContent,
@@ -6,87 +6,115 @@ import {
     Stack,
     Box,
     TextField,
-    Button
-} from '@mui/material';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-
-import dayjs from 'dayjs';
+    Button,
+} from "@mui/material";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
 
 export function TaskCard(props) {
-
-    const { task, fetchTasks } = props;
+    const { task, project, status, isNewTask = false } = props;
+    const initialTask = isNewTask ? {
+        title: '',
+        description: '',
+        project: project._id,
+        status: status._id,
+        due: new Date().toISOString()
+    } : task;
+    const [localTask, setLocalTask] = useState(initialTask);
     const [expanded, setExpanded] = useState(false);
-    const [localTask, setLocalTask] = useState(task);
 
-
-    const handleInputChange = (property, e) => {
-        const newValue = e.target.value;
-        setLocalTask((prevTask) => ({
-            ...prevTask,
-            [property]: newValue,
-        }));
-    };
-
-    //Save task function
-    const handleSaveTask = async () => {
-        try {
-            const response = await fetch("/api/tasks/", {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(localTask),
-            });
-
-            if (response.ok) {
-                console.log(`${localTask.title} was updated successfully in the handleSaveTask function`)
-                const createdTask = await response.json();
-
-
-            } else {
-                prompt("error updating")
-            }
-        } catch (error) {
-            console.log("unknown error")
+    const handleApiResponse = async (response, successMessage) => {
+        if (response.ok) {
+            console.log(successMessage);
+        } else {
+            const data = await response.json();
+            console.error('Error:', data.error || 'Unknown error');
         }
     };
 
-    //Delete task function
+    const onCreate = async () => {
+        try {
+            const response = await fetch("/api/tasks/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(localTask),
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                console.log(`${localTask.title} was created successfully`);
+                setLocalTask(data);
+                if (props.onCreate) {
+                    props.onCreate(data);
+                }
+            } else {
+                console.error('Error:', data.error || 'Unknown error');
+            }
+        } catch (error) {
+            console.error('Error creating task:', error.message);
+        }
+    };
+
+
+    const onCancel = () => {
+        if (props.onCancel) {
+            props.onCancel();
+        }
+    };
+
+    const onInputChange = (property, e) => {
+        const newValue = e.target.value;
+        setLocalTask(prevTask => ({ ...prevTask, [property]: newValue }));
+    };
+
+    const onSave = async () => {
+        try {
+            const response = await fetch("/api/tasks/", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(localTask),
+            });
+
+            handleApiResponse(response, `${localTask.title} was updated successfully`);
+        } catch (error) {
+            console.error('Error updating task:', error.message);
+        }
+    };
+
     const handleDeleteTask = async () => {
         try {
-            console.log(localTask._id);
-            console.log(localTask)
             if (!localTask._id) {
-                console.error('Task does not have an id');
+                console.error("Task does not have an id");
                 return;
             }
 
             const response = await fetch(`/api/tasks?id=${localTask._id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
             });
 
             if (response.status === 200) {
                 alert(`"${localTask.title}" was deleted successfully`);
-                // I'm not sure if the "fetchTasks()" function is being executed, it might not be declared properly. props.fetchTasks is not working either.
-                // fetchTasks();
-                // window.location.reload();
+                if (props.onDelete) {
+                    props.onDelete(localTask._id);
+                }
+            } else {
+                const data = await response.json();
+                console.error('Error deleting:', data.error || 'Unknown error');
             }
         } catch (err) {
-            console.error(err);
+            console.error('Error deleting task:', err.message);
         }
     };
 
     const handleDeleteAlert = () => {
-        if (window.confirm('Are you sure you want to delete this task?')) {
+        if (window.confirm("Are you sure you want to delete this task?")) {
             handleDeleteTask();
         }
     };
+
     return (
         <Card
             sx={{ maxWidth: 345 }}
@@ -95,47 +123,103 @@ export function TaskCard(props) {
         >
             <CardContent
                 sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
                 }}
             >
                 <TextField
+                    name="title"
                     value={localTask.title}
-                    onChange={(e) => handleInputChange('title', e)}
+                    onChange={(e) => onInputChange("title", e)}
                     placeholder="Title"
                     fullWidth
                     size="small"
-                ></TextField>
+                />
             </CardContent>
-            <Collapse in={expanded} timeout="auto" unmountOnExit={false} >
-                {/* By adding this div around the CardContent I was able to click on the calender in order to update task due dates */}
+            <Collapse in={expanded} timeout="auto" unmountOnExit={false}>
                 <Box sx={{ pointerEvents: "auto" }}>
                     <CardContent>
                         <Stack spacing={2}>
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DatePicker
+                                    name="due"
                                     value={dayjs(localTask.due)}
-                                    onChange={(date) => setLocalTask(prev => ({ ...prev, due: date.toISOString() }))}
-                                    slotProps={{ textField: { fullWidth: true, size: 'small' } }}
+                                    onChange={(date) =>
+                                        setLocalTask((prev) => ({
+                                            ...prev,
+                                            due: date.toISOString(),
+                                        }))
+                                    }
+                                    slotProps={{ textField: { fullWidth: true, size: "small" } }}
                                 />
                             </LocalizationProvider>
                             <TextField
+                                name="description"
                                 value={localTask.description}
-                                onChange={(e) => handleInputChange('description', e)}
+                                onChange={(e) => onInputChange("description", e)}
                                 placeholder="Description"
                                 multiline
                                 fullWidth
                                 size="small"
                                 maxRows={4}
                             />
-                            <Box sx={{ display: "flex", justifyContent: "center" }}>
-                                <Button variant="outlined" onClick={handleSaveTask} size="small" sx={{ width: "10px" }}>
-                                    Save
-                                </Button>
-                                <Button onClick={handleDeleteAlert} size="small" sx={{ width: "10px" }}>
-                                    Delete
-                                </Button>
+                            <TextField
+                                name="project"
+                                value={project._id}
+                                disabled
+                                fullWidth
+                                size="small"
+                                label="Project ID"
+                            />
+                            <TextField
+                                name="status"
+                                value={status._id}
+                                disabled
+                                fullWidth
+                                size="small"
+                                label="Status ID"
+                            />
+                            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                                {!isNewTask && (
+                                    <>
+                                        <Button
+                                            variant="outlined"
+                                            onClick={onSave}
+                                            size="small"
+                                            sx={{ margin: "0 5px" }}
+                                        >
+                                            Save
+                                        </Button>
+                                        <Button
+                                            onClick={handleDeleteAlert}
+                                            size="small"
+                                            sx={{ margin: "0 5px" }}
+                                        >
+                                            Delete
+                                        </Button>
+                                    </>
+                                )}
+                                {isNewTask && (
+                                    <>
+                                        <Button
+                                            variant="outlined"
+                                            onClick={onCreate}
+                                            size="small"
+                                            sx={{ margin: "0 5px" }}
+                                        >
+                                            Create
+                                        </Button>
+                                        <Button
+                                            variant="outlined"
+                                            onClick={onCancel}
+                                            size="small"
+                                            sx={{ margin: "0 5px" }}
+                                        >
+                                            Cancel
+                                        </Button>
+                                    </>
+                                )}
                             </Box>
                         </Stack>
                     </CardContent>
@@ -143,4 +227,7 @@ export function TaskCard(props) {
             </Collapse>
         </Card>
     );
+
 }
+
+export default TaskCard;

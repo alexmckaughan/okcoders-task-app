@@ -1,59 +1,40 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import KanbanBoard from "../../components/KanbanBoard";
-import { useRouter } from "next/router";
 
 export default function Projects() {
-  const [tasks, setTasks] = useState([]);
   const [projects, setProjects] = useState([]);
-  const router = useRouter();
-
-  async function fetchTasks() {
-    try {
-      const response = await fetch("/api/tasks");
-      if (response.ok) {
-        const data = await response.json();
-        setTasks(data);
-        console.log("data: ", data);
-      } else {
-        console.error("API request failed");
-      }
-    } catch (error) {
-      console.error("Unknown error", error);
-    }
-  }
 
   async function fetchProjects() {
+    console.log("Projects Page: Fetching projects data...");
     try {
       const response = await fetch("/api/projects");
       if (response.ok) {
         const data = await response.json();
+        console.log("Projects Page: Setting projects data:", data);
         setProjects(data);
-        console.log("data: ", data);
       } else {
-        console.error("API request failed");
+        console.error("Projects Page: API request failed");
       }
     } catch (error) {
-      console.error("Unknown error", error);
+      console.error("Projects Page: Unknown error", error);
     }
   }
 
   useEffect(() => {
-    fetchTasks();
+    console.log("Projects Page: useEffect triggered (initial fetch)");
     fetchProjects();
   }, []);
 
-  return (
-    <>
-      {/* {tasks.length > 0 && (
-        <KanbanBoard tasks={tasks} fetchTasks={fetchTasks} />
-      )} */}
-      {projects.length > 0 &&
-        projects.map((project) => {
-          <KanbanBoard project={project} />;
-        })}
-      {/* Insert ColumnContainer.jsx here */}
-      {/* <ColumnContainer tasks={tasks} /> */}
-      {/* {tasks[0] && <TaskCard task={tasks[0]} />} */}
-    </>
-  );
+  const renderedBoards = useMemo(() => {
+    console.log(
+      "Projects Page: Recalculating renderedBoards due to change in projects."
+    );
+    return projects.map((project) => (
+      <KanbanBoard key={project._id} project={project} />
+    ));
+  }, [projects]);
+
+  console.log("Projects Page: Rendering...");
+
+  return <>{renderedBoards}</>;
 }
