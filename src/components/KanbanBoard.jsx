@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ColumnContainer } from "./ColumnContainer";
-import { Container, Grid } from "@mui/material";
+import { Container, Grid, AppBar, Toolbar, Typography, Box } from "@mui/material";
+import { UserButton } from "@clerk/nextjs";
 
 function KanbanBoard(props) {
   const [tasks, setTasks] = useState([]);
@@ -38,6 +39,7 @@ function KanbanBoard(props) {
     container: {
       display: "flex",
       flexDirection: "column",
+      marginTop:"10px"
     },
     column: {
       display: "flex",
@@ -52,6 +54,17 @@ function KanbanBoard(props) {
 
 
   return (
+    <>
+   <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            PROJECTS
+          </Typography>
+            <Box>
+              <UserButton afterSignOutUrl="/"/>
+            </Box>
+        </Toolbar>
+      </AppBar>
     <Container sx={columnStyles.container}>
       <Grid container spacing={2} sx={{ flexGrow: 1 }}>
         {projectColumns.map((column) => (
@@ -67,6 +80,7 @@ function KanbanBoard(props) {
         ))}
       </Grid>
     </Container>
+    </>
   );
 }
 
