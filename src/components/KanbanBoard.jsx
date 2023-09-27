@@ -55,16 +55,6 @@ function KanbanBoard(props) {
 
   return (
     <>
-   <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            PROJECTS
-          </Typography>
-            <Box>
-              <UserButton afterSignOutUrl="/"/>
-            </Box>
-        </Toolbar>
-      </AppBar>
     <Container sx={columnStyles.container}>
       <Grid container spacing={2} sx={{ flexGrow: 1 }}>
         {projectColumns.map((column) => (
