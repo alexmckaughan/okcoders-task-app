@@ -13,14 +13,18 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 //import getAuth
+import { useAuth } from "@clerk/nextjs";
+
 export function TaskCard(props) {
+    const { userId } = useAuth();
     const { task, project, status, isNewTask = false } = props;
-    //add createdBy, modifiedBy
     const initialTask = isNewTask ? {
         title: '',
         description: '',
         project: project._id,
         status: status._id,
+        createdBy: userId,
+        //modifiedBy: userId,
         due: new Date().toISOString()
     } : task;
     const [localTask, setLocalTask] = useState(initialTask);
