@@ -12,9 +12,10 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
-
+//import getAuth
 export function TaskCard(props) {
     const { task, project, status, isNewTask = false } = props;
+    //add createdBy, modifiedBy
     const initialTask = isNewTask ? {
         title: '',
         description: '',

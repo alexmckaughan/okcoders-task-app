@@ -1,6 +1,6 @@
 import { SignIn } from "@clerk/nextjs";
- 
+import { Box } from "@mui/material"; 
 export default function Page() {
-   return <SignIn />;
+   return <Box sx={{display:'flex',justifyContent:'center'}}><SignIn /></Box>;
   
 }
