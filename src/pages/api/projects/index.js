@@ -3,10 +3,8 @@ import Project from "../../../server/models/Project";
 
 
 export default async function handler(req, res) {
-    console.log(userId)
     console.log("API request received");
     await dbConnect();
-
     if (req.method === "POST") {
         const project = await Project.create(req.body);
         res.status(201).json(project);
