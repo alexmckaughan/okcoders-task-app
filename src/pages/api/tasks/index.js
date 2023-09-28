@@ -37,7 +37,7 @@ export default async function handler(req, res) {
   } else if (req.method === "PUT") {
     try {
       // Parse the request body to get the updated task data
-      const { _id, description, status, title, due } = req.body;
+      const { _id, description, status, title, due, modifiedBy } = req.body;
 
       const existingTask = await Task.findById(_id);
 
@@ -47,13 +47,14 @@ export default async function handler(req, res) {
         return;
       }
 
-      console.log("Updated task data: ", { description, status, title, due });
+      console.log("Updated task data: ", { description, status, title, due, modifiedBy });
       //Update the task with new data
       existingTask.description = description;
       existingTask.status = status;
       existingTask.title = title;
       existingTask.due = due;
-
+      existingTask.modifiedBy = modifiedBy;
+      
       //Saving the updated task
       const updatedTask = await existingTask.save();
       console.log("Task updated");

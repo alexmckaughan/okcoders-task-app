@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ColumnContainer } from "./ColumnContainer";
 import { Container, Grid, AppBar, Toolbar, Typography, Box } from "@mui/material";
-import { UserButton } from "@clerk/nextjs";
+
 
 function KanbanBoard(props) {
   const [tasks, setTasks] = useState([]);

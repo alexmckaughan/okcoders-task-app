@@ -12,7 +12,6 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
-//import getAuth
 import { useAuth } from "@clerk/nextjs";
 
 export function TaskCard(props) {
@@ -24,7 +23,7 @@ export function TaskCard(props) {
         project: project._id,
         status: status._id,
         createdBy: userId,
-        //modifiedBy: userId,
+        modifiedBy: userId,
         due: new Date().toISOString()
     } : task;
     const [localTask, setLocalTask] = useState(initialTask);
@@ -76,10 +75,15 @@ export function TaskCard(props) {
 
     const onSave = async () => {
         try {
+            const taskToSave = isNewTask
+            ? localTask:{
+                ...localTask,
+                modifiedBy: userId,
+            };
             const response = await fetch("/api/tasks/", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(localTask),
+                body: JSON.stringify(taskToSave),
             });
 
             handleApiResponse(response, `${localTask.title} was updated successfully`);
