@@ -9,11 +9,27 @@ import {
 } from "@mui/material";
 import { TaskCard } from "./TaskCard";
 import { useRouter } from "next/router";
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { CSS } from "@dnd-kit/utilities"
+import { StyleRegistry } from "styled-jsx";
 
 export function ColumnContainer(props) {
   const router = useRouter();
   const { id } = router.query;
+  const { setNodeRef, attributes, listeners, transform, transition } =
+    useSortable({
+      id: props.column._id,
+      data: {
+        column: props.column,
+        tasks: props.tasks,
+        project: props.project,
+      }
+    });
+
+  const style = {
+    transition,
+    transform: CSS.Transform.toString(transform),
+  }
 
   const [showNewTask, setShowNewTask] = useState(false);
 
@@ -32,39 +48,37 @@ export function ColumnContainer(props) {
   };
 
   return (
-    <SortableContext strategy={verticalListSortingStrategy}>
-      <Grid key={props.column._id} item xs={12} sm={4}>
-        <Paper elevation={3} sx={props.columnStyles.column}>
-          <Typography variant="h4">
-            {props.column.label}
-            <hr />
-          </Typography>
-          <Stack spacing={1} >
-            {props.tasks.map((task) => (
-              <Box key={task._id}>
-                <TaskCard
-                  project={props.project}
-                  status={props.status}
-                  task={task}
-                  fetchTasks={props.fetchTasks}
-                  onDelete={handleDeleteTask}
-                />
-              </Box>
-            ))}
-            {showNewTask && (
+    <Grid ref={setNodeRef} style={style} key={props.column._id} item xs={12} sm={4}>
+      <Paper elevation={3} sx={props.columnStyles.column} {...attributes} {...listeners}>
+        <Typography variant="h4">
+          {props.column.label}
+          <hr />
+        </Typography>
+        <Stack spacing={1} >
+          {props.tasks.map((task) => (
+            <Box key={task._id}>
               <TaskCard
-                isNewTask
                 project={props.project}
                 status={props.status}
-                onCreate={handleCreateNewTask}
-                onCancel={handleCancelNewTask}
+                task={task}
+                fetchTasks={props.fetchTasks}
+                onDelete={handleDeleteTask}
               />
-            )}
-            <Button onClick={() => setShowNewTask(true)}>ADD</Button>
-          </Stack>
-        </Paper>
-      </Grid>
-    </SortableContext>
+            </Box>
+          ))}
+          {showNewTask && (
+            <TaskCard
+              isNewTask
+              project={props.project}
+              status={props.status}
+              onCreate={handleCreateNewTask}
+              onCancel={handleCancelNewTask}
+            />
+          )}
+          <Button onClick={() => setShowNewTask(true)}>ADD</Button>
+        </Stack>
+      </Paper>
+    </Grid>
   );
 }
 

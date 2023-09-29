@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ColumnContainer } from "./ColumnContainer";
 import { Container, Grid, AppBar, Toolbar, Typography, Box } from "@mui/material";
 import { DndContext } from '@dnd-kit/core';
+import { SortableContext } from '@dnd-kit/sortable';
 
 function KanbanBoard(props) {
   const [tasks, setTasks] = useState([]);
   const [projectColumns, setProjectColumns] = useState([]);
+  const columnsId = useMemo(() => projectColumns.map(column => column._id), [projectColumns]);
 
   async function fetchTasks() {
     const projectId = props.project._id;
@@ -57,17 +59,19 @@ function KanbanBoard(props) {
     <DndContext>
       <Container sx={columnStyles.container}>
         <Grid container spacing={2} sx={{ flexGrow: 1 }}>
-          {projectColumns.map((column) => (
-            <ColumnContainer
-              key={column._id}
-              column={column}
-              tasks={tasks.filter(task => task.status === column._id)}
-              fetchTasks={fetchTasks}
-              columnStyles={columnStyles}
-              project={props.project}
-              status={column}
-            />
-          ))}
+          <SortableContext items={columnsId}>
+            {projectColumns.map((column) => (
+              <ColumnContainer
+                key={column._id}
+                column={column}
+                tasks={tasks.filter(task => task.status === column._id)}
+                fetchTasks={fetchTasks}
+                columnStyles={columnStyles}
+                project={props.project}
+                status={column}
+              />
+            ))}
+          </SortableContext>
         </Grid>
       </Container>
     </DndContext>
