@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
     Card,
     CardContent,
@@ -13,9 +13,6 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import { useAuth } from "@clerk/nextjs";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { useSensor, useSensors, PointerSensor } from "@dnd-kit/core";
 
 export function TaskCard(props) {
     const { userId } = useAuth();
@@ -31,34 +28,6 @@ export function TaskCard(props) {
     } : task;
     const [localTask, setLocalTask] = useState(initialTask);
     const [expanded, setExpanded] = useState(false);
-    const { setNodeRef, attributes, listeners, transform, transition, isDragging } =
-        useSortable({
-            id: props.task._id,
-            data: {
-                task: props.task,
-                project: props.project,
-                status: props.status,
-                type: "task",
-            }
-        });
-    const [isBeingDragged, setIsBeingDragged] = useState(false);
-
-    useEffect(() => {
-        setIsBeingDragged(isDragging);
-    }, [isDragging]);
-
-    const style = {
-        transition,
-        transform: CSS.Transform.toString(transform),
-    }
-
-    const sensors = useSensors(
-        useSensor(PointerSensor, {
-            activationConstraint: {
-                distance: 5,
-            },
-        })
-    );
 
     const handleApiResponse = async (response, successMessage) => {
         if (response.ok) {
@@ -155,43 +124,11 @@ export function TaskCard(props) {
         }
     };
 
-    if (isDragging) {
-        return (
-            <Card
-                ref={setNodeRef}
-                style={style}
-                {...attributes}
-                {...listeners}
-                sensors={sensors}
-                sx={{ maxWidth: 345 }}
-            >
-                <CardContent
-                    sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                    }}
-                >
-                    <TextField
-                        name="title"
-                        value={localTask.title}
-                        onChange={(e) => onInputChange("title", e)}
-                        placeholder="Title"
-                        fullWidth
-                        size="small"
-                    />
-                </CardContent>
-            </Card>
-        );
-    }
-
     return (
         <Card
-            ref={setNodeRef}
-            style={style}
-            {...attributes}
-            {...listeners}
             sx={{ maxWidth: 345 }}
+            onFocus={() => setExpanded(true)}
+            onBlur={() => setExpanded(false)}
         >
             <CardContent
                 sx={{
@@ -207,8 +144,6 @@ export function TaskCard(props) {
                     placeholder="Title"
                     fullWidth
                     size="small"
-                    onFocus={() => !isBeingDragged && setExpanded(true)}
-                    onBlur={() => !isBeingDragged && setExpanded(false)}
                 />
             </CardContent>
             <Collapse in={expanded} timeout="auto" unmountOnExit={false}>
@@ -263,14 +198,14 @@ export function TaskCard(props) {
                                             size="small"
                                             sx={{ margin: "0 5px" }}
                                         >
-                                            SAVE
+                                            Save
                                         </Button>
                                         <Button
                                             onClick={handleDeleteAlert}
                                             size="small"
                                             sx={{ margin: "0 5px" }}
                                         >
-                                            DELETE
+                                            Delete
                                         </Button>
                                     </>
                                 )}
@@ -282,7 +217,7 @@ export function TaskCard(props) {
                                             size="small"
                                             sx={{ margin: "0 5px" }}
                                         >
-                                            CREATE
+                                            Create
                                         </Button>
                                         <Button
                                             variant="outlined"
@@ -290,7 +225,7 @@ export function TaskCard(props) {
                                             size="small"
                                             sx={{ margin: "0 5px" }}
                                         >
-                                            CANCEL
+                                            Cancel
                                         </Button>
                                     </>
                                 )}

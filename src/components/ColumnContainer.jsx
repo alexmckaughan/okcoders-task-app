@@ -81,7 +81,7 @@ export function ColumnContainer(props) {
                 type="task"
               />
             )}
-            <Button onClick={() => setShowNewTask(true)}>ADD</Button>
+            <Button onClick={() => setShowNewTask(true)}>ADD TASK</Button>
           </SortableContext>
         </Stack>
       </Paper>
