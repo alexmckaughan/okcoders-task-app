@@ -8,7 +8,7 @@ export default function Footer() {
 
 
     return (
-        <footer style={{ marginTop: '20px', textAlign: 'center' }}>
+        <footer style={{ textAlign: 'center' }}>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 @ {new Date().getFullYear()} - All Rights Reserved
             </Typography>
