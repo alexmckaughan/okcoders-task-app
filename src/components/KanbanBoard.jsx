@@ -1,13 +1,16 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { ColumnContainer } from "./ColumnContainer";
 import { Container, Grid, AppBar, Toolbar, Typography, Box } from "@mui/material";
-import { DndContext } from '@dnd-kit/core';
+import { DndContext, DragOverlay } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
+import { createPortal } from "react-dom";
 
 function KanbanBoard(props) {
   const [tasks, setTasks] = useState([]);
   const [projectColumns, setProjectColumns] = useState([]);
   const columnsId = useMemo(() => projectColumns.map(column => column._id), [projectColumns]);
+
+  const [activeColumn, setActiveColumn] = useState(null);
 
   async function fetchTasks() {
     const projectId = props.project._id;
@@ -54,9 +57,17 @@ function KanbanBoard(props) {
 
   console.log("Tasks for each column: ", projectColumns.map(column => tasks.filter(task => task.status === column.label)));
 
+  function onDragStart(event) {
+    console.log("Drag started: ", event);
+    if (event.active.data.current?.column) {
+      setActiveColumn(event.active.data.current.column);
+      return;
+    }
+  }
+
 
   return (
-    <DndContext>
+    <DndContext onDragStart={onDragStart}>
       <Container sx={columnStyles.container}>
         <Grid container spacing={2} sx={{ flexGrow: 1 }}>
           <SortableContext items={columnsId}>
@@ -74,6 +85,19 @@ function KanbanBoard(props) {
           </SortableContext>
         </Grid>
       </Container>
+      {createPortal(
+        <DragOverlay>
+          {activeColumn && (
+            <ColumnContainer key={activeColumn._id}
+              column={activeColumn}
+              tasks={tasks.filter(task => task.status === activeColumn._id)}
+              fetchTasks={fetchTasks}
+              columnStyles={columnStyles}
+              project={props.project}
+              status={activeColumn} />
+          )}
+        </DragOverlay>, document.body
+      )}
     </DndContext>
   );
 }
