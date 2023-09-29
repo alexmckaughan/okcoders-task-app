@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ColumnContainer } from "./ColumnContainer";
 import { Container, Grid, AppBar, Toolbar, Typography, Box } from "@mui/material";
-
+import { DndContext } from '@dnd-kit/core';
 
 function KanbanBoard(props) {
   const [tasks, setTasks] = useState([]);
@@ -39,7 +39,7 @@ function KanbanBoard(props) {
     container: {
       display: "flex",
       flexDirection: "column",
-      marginTop:"10px"
+      marginTop: "10px"
     },
     column: {
       display: "flex",
@@ -54,23 +54,23 @@ function KanbanBoard(props) {
 
 
   return (
-    <>
-    <Container sx={columnStyles.container}>
-      <Grid container spacing={2} sx={{ flexGrow: 1 }}>
-        {projectColumns.map((column) => (
-          <ColumnContainer
-            key={column._id}
-            column={column}
-            tasks={tasks.filter(task => task.status === column._id)}
-            fetchTasks={fetchTasks}
-            columnStyles={columnStyles}
-            project={props.project}
-            status={column}
-          />
-        ))}
-      </Grid>
-    </Container>
-    </>
+    <DndContext>
+      <Container sx={columnStyles.container}>
+        <Grid container spacing={2} sx={{ flexGrow: 1 }}>
+          {projectColumns.map((column) => (
+            <ColumnContainer
+              key={column._id}
+              column={column}
+              tasks={tasks.filter(task => task.status === column._id)}
+              fetchTasks={fetchTasks}
+              columnStyles={columnStyles}
+              project={props.project}
+              status={column}
+            />
+          ))}
+        </Grid>
+      </Container>
+    </DndContext>
   );
 }
 
