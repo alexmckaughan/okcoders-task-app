@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Box,
   Typography,
@@ -23,6 +23,7 @@ export function ColumnContainer(props) {
         column: props.column,
         tasks: props.tasks,
         project: props.project,
+        type: "column",
       }
     });
 
@@ -31,10 +32,7 @@ export function ColumnContainer(props) {
     transform: CSS.Transform.toString(transform),
   }
 
-  // if (isDragging) {
-  //   return (<TaskCard ref={setNodeRef} style={style}></TaskCard>
-  //   );
-  // }
+  const taskIds = useMemo(() => props.tasks.map(task => task._id), [props.tasks]);
 
   const [showNewTask, setShowNewTask] = useState(false);
 
@@ -60,27 +58,31 @@ export function ColumnContainer(props) {
           <hr />
         </Typography>
         <Stack spacing={1} >
-          {props.tasks.map((task) => (
-            <Box key={task._id}>
+          <SortableContext items={taskIds}>
+            {props.tasks.map((task) => (
+              <Box key={task._id}>
+                <TaskCard
+                  project={props.project}
+                  status={props.status}
+                  task={task}
+                  fetchTasks={props.fetchTasks}
+                  onDelete={handleDeleteTask}
+                  type="task"
+                />
+              </Box>
+            ))}
+            {showNewTask && (
               <TaskCard
+                isNewTask
                 project={props.project}
                 status={props.status}
-                task={task}
-                fetchTasks={props.fetchTasks}
-                onDelete={handleDeleteTask}
+                onCreate={handleCreateNewTask}
+                onCancel={handleCancelNewTask}
+                type="task"
               />
-            </Box>
-          ))}
-          {showNewTask && (
-            <TaskCard
-              isNewTask
-              project={props.project}
-              status={props.status}
-              onCreate={handleCreateNewTask}
-              onCancel={handleCancelNewTask}
-            />
-          )}
-          <Button onClick={() => setShowNewTask(true)}>ADD</Button>
+            )}
+            <Button onClick={() => setShowNewTask(true)}>ADD</Button>
+          </SortableContext>
         </Stack>
       </Paper>
     </Grid>
