@@ -12,6 +12,7 @@
     "@clerk/clerk-react": "^4.25.1",
     "@clerk/nextjs": "^4.24.1",
     "@dnd-kit/core": "^6.0.8",
+    "@dnd-kit/sortable": "^7.0.2",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.7",
