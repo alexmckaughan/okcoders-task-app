@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from "@dnd-kit/utilities"
 import { StyleRegistry } from "styled-jsx";
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 export function ColumnContainer(props) {
   const router = useRouter();
@@ -81,7 +82,7 @@ export function ColumnContainer(props) {
                 type="task"
               />
             )}
-            <Button onClick={() => setShowNewTask(true)}>ADD TASK</Button>
+            <Button onClick={() => setShowNewTask(true)}><AddCircleOutlineIcon sx={{ mr: 1 }} /> ADD TASK</Button>
           </SortableContext>
         </Stack>
       </Paper>

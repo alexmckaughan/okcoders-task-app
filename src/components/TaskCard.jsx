@@ -172,6 +172,7 @@ export function TaskCard(props) {
                                 fullWidth
                                 size="small"
                                 maxRows={4}
+                                minRows={2}
                             />
                             <TextField
                                 name="project"
@@ -179,7 +180,7 @@ export function TaskCard(props) {
                                 disabled
                                 fullWidth
                                 size="small"
-                                label="Project ID"
+                                sx={{ display: 'none' }}
                             />
                             <TextField
                                 name="status"
@@ -187,7 +188,7 @@ export function TaskCard(props) {
                                 disabled
                                 fullWidth
                                 size="small"
-                                label="Status ID"
+                                sx={{ display: 'none' }}
                             />
                             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                                 {!isNewTask && (
