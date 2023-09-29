@@ -16,7 +16,7 @@ import { StyleRegistry } from "styled-jsx";
 export function ColumnContainer(props) {
   const router = useRouter();
   const { id } = router.query;
-  const { setNodeRef, attributes, listeners, transform, transition } =
+  const { setNodeRef, attributes, listeners, transform, transition, isDragging } =
     useSortable({
       id: props.column._id,
       data: {
@@ -30,6 +30,11 @@ export function ColumnContainer(props) {
     transition,
     transform: CSS.Transform.toString(transform),
   }
+
+  // if (isDragging) {
+  //   return (<TaskCard ref={setNodeRef} style={style}></TaskCard>
+  //   );
+  // }
 
   const [showNewTask, setShowNewTask] = useState(false);
 

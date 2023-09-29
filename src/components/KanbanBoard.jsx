@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { ColumnContainer } from "./ColumnContainer";
 import { Container, Grid, AppBar, Toolbar, Typography, Box } from "@mui/material";
 import { DndContext, DragOverlay } from '@dnd-kit/core';
-import { SortableContext } from '@dnd-kit/sortable';
+import { SortableContext, arrayMove } from '@dnd-kit/sortable';
 import { createPortal } from "react-dom";
 
 function KanbanBoard(props) {
@@ -65,9 +65,28 @@ function KanbanBoard(props) {
     }
   }
 
+  function onDragEnd(event) {
+    const { active, over } = event;
+    if (!over) {
+      return;
+    }
+    const activeColumnId = active.id;
+    const overColumnId = over.id;
+
+    if (activeColumnId === overColumnId) {
+      return;
+    }
+
+    setProjectColumns((columns) => {
+      const activeColumnIndex = columns.findIndex(column => column._id === activeColumnId);
+      const overColumnIndex = columns.findIndex(column => column._id === overColumnId);
+
+      return arrayMove(columns, activeColumnIndex, overColumnIndex);
+    })
+  }
 
   return (
-    <DndContext onDragStart={onDragStart}>
+    <DndContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
       <Container sx={columnStyles.container}>
         <Grid container spacing={2} sx={{ flexGrow: 1 }}>
           <SortableContext items={columnsId}>
