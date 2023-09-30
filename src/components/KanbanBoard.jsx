@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { ColumnContainer } from "./ColumnContainer";
-import { Container, Grid, Paper, Button, Typography } from "@mui/material";
+import { Container, Grid, Paper, Button, Typography, Box } from "@mui/material";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
@@ -16,19 +16,23 @@ import { SortableContext, arrayMove } from '@dnd-kit/sortable';
 import { createPortal } from "react-dom";
 
 // Moved columnStyles outside of the component to prevent re-creation on each render
+const columnWidth = "18rem"
+
 const columnStyles = {
   container: {
     display: "flex",
     flexDirection: "column",
     marginTop: "10px",
     overflowX: "auto",
+    overflowY: "hidden",
+    maxHeight: "100vh",
     justifyContent: "space-evenly",
 
   },
   column: {
     border: "1px solid black",
     padding: "20px",
-    width: "18rem",
+    width: columnWidth,
     height: "30em",
     overflowY: "auto",
   },
@@ -38,10 +42,11 @@ const newColumnStyles = {
   border: "1px solid black",
   marginTop: "2em",
   marginLeft: "1.5em",
+  width: columnWidth,
 }
 
 const buttonStyle = {
-  width: "18em",
+  width: columnWidth,
   height: "auto",
   alignItems: "center",
 }
@@ -196,7 +201,7 @@ function KanbanBoard(props) {
 
   return (
     <DndContext onDragStart={onDragStart} onDragEnd={onDragEnd} onDragOver={onDragOver} sensors={sensors}>
-      <Container style={columnStyles.container}>
+      <Box style={{ ...columnStyles.container, width: '100%', overflowX: 'hidden', overflowY: 'hidden', whiteSpace: 'nowrap' }}>
         <Grid
           container
           columns='auto'
@@ -222,40 +227,41 @@ function KanbanBoard(props) {
 
             ))}
             <Paper style={newColumnStyles}>
-              <Button
-                onClick={onColumnCreate}
-                sx={{
-                  width: '18em',
-                  height: 'auto',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center'
-                }}
-              >
-                <Typography variant="h5" sx={{ textAlign: 'center' }}>
-                  <AddCircleOutlineIcon /> New Column
+              <Button onClick={onColumnCreate}>
+                <Typography
+                  sx={{
+                    fontSize: "1em",
+                    width: columnWidth,
+                    height: 'auto',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <AddCircleOutlineIcon sx={{ mr: 1 }} /> New Column
                 </Typography>
               </Button>
             </Paper>
           </SortableContext>
         </Grid>
-      </Container>
-      {createPortal(
-        <DragOverlay>
-          {activeColumn && (
-            <ColumnContainer key={activeColumn._id}
-              column={activeColumn}
-              tasks={tasks.filter(task => task.status === activeColumn._id)}
-              fetchTasks={fetchTasks}
-              columnStyles={columnStyles}
-              project={props.project}
-              status={activeColumn}
-              onDeleteColumn={onDeleteColumn}
-            />
-          )}
-        </DragOverlay>, document.body
-      )}
-    </DndContext>
+      </Box>
+      {
+        createPortal(
+          <DragOverlay>
+            {activeColumn && (
+              <ColumnContainer key={activeColumn._id}
+                column={activeColumn}
+                tasks={tasks.filter(task => task.status === activeColumn._id)}
+                fetchTasks={fetchTasks}
+                columnStyles={columnStyles}
+                project={props.project}
+                status={activeColumn}
+                onDeleteColumn={onDeleteColumn}
+              />
+            )}
+          </DragOverlay>, document.body
+        )
+      }
+    </DndContext >
   );
 }
 

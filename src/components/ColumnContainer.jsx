@@ -138,6 +138,7 @@ export function ColumnContainer(props) {
         </Stack>
       </Paper>
       <Button style={{
+        fontSize: "1em",
         position: "relative",
         bottom: "2.7em",
         left: ".1em",
