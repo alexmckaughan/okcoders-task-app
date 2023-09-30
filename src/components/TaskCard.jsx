@@ -48,7 +48,6 @@ export function TaskCard(props) {
 
             const data = await response.json();
             if (response.ok) {
-                console.log(`${localTask.title} was created successfully`);
                 setLocalTask(data);
                 if (props.onCreate) {
                     props.onCreate(data);
