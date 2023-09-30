@@ -41,9 +41,9 @@ const newColumnStyles = {
 }
 
 const buttonStyle = {
-width: "18em",
-height: "auto",
-alignItems: "center",
+  width: "18em",
+  height: "auto",
+  alignItems: "center",
 }
 
 function KanbanBoard(props) {
@@ -108,36 +108,40 @@ function KanbanBoard(props) {
 
   const onColumnCreate = async () => {
     try {
-        const nextColumnNumber = columns.length + 1;
-        const columnName = `Column ${nextColumnNumber}`;
+      const nextColumnNumber = columns.length + 1;
+      const columnName = `Column ${nextColumnNumber}`;
 
-        const response = await fetch("/api/statuses/", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ 
-              label: columnName,
-              project: props.project,
-            }),
-        });
+      const response = await fetch("/api/statuses/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          label: columnName,
+          project: props.project,
+        }),
+      });
 
-        const data = await response.json();
-        if (response.ok) {
-            console.log("New Column Created Successfully");
-            setColumns((prevColumns) => [...prevColumns, data]);
-            setNewColumnName("");
-            if (props.onCreate) {
-                props.onCreate(data);
-            }
-            setActiveColumn(data.id);
-
-        } else {
-            console.error('Error:', data.error || 'Unknown error');
+      const data = await response.json();
+      if (response.ok) {
+        console.log("New Column Created Successfully");
+        setColumns((prevColumns) => [...prevColumns, data]);
+        setNewColumnName("");
+        if (props.onCreate) {
+          props.onCreate(data);
         }
+        setActiveColumn(data.id);
+
+      } else {
+        console.error('Error:', data.error || 'Unknown error');
+      }
     } catch (error) {
-        console.error('Error creating column:', error.message);
+      console.error('Error creating column:', error.message);
     }
-};
-      
+  };
+
+  const onDeleteColumn = (columnId) => {
+    setColumns(prevColumns => prevColumns.filter(col => col._id !== columnId));
+  };
+
 
   function onDragStart(event) {
     const { active } = event;
@@ -195,14 +199,14 @@ function KanbanBoard(props) {
   return (
     <DndContext onDragStart={onDragStart} onDragEnd={onDragEnd} onDragOver={onDragOver} sensors={sensors}>
       <Container style={columnStyles.container}>
-        <Grid 
-        container
-        columns='auto'
-        alignItems="flex-start"
-        spacing={4}
-        wrap="nowrap"
-       
-         >
+        <Grid
+          container
+          columns='auto'
+          alignItems="flex-start"
+          spacing={4}
+          wrap="nowrap"
+
+        >
           <SortableContext items={columnsId}>
             {columns.map((column) => (
               <ColumnContainer
@@ -213,16 +217,25 @@ function KanbanBoard(props) {
                 columnStyles={columnStyles}
                 project={props.project}
                 status={column}
+                onDeleteColumn={onDeleteColumn}
               >
-                
+
               </ColumnContainer>
 
             ))}
             <Paper style={newColumnStyles}>
-              <Button onClick={onColumnCreate} style={buttonStyle}>
-
-                <Typography variant="h5" style={{textAlign: "center"}}>
-                <AddCircleOutlineIcon /> New Column
+              <Button
+                onClick={onColumnCreate}
+                sx={{
+                  width: '18em',
+                  height: 'auto',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
+              >
+                <Typography variant="h5" sx={{ textAlign: 'center' }}>
+                  <AddCircleOutlineIcon /> New Column
                 </Typography>
               </Button>
             </Paper>
@@ -239,6 +252,7 @@ function KanbanBoard(props) {
               columnStyles={columnStyles}
               project={props.project}
               status={activeColumn}
+              onDeleteColumn={onDeleteColumn}
             />
           )}
         </DragOverlay>, document.body

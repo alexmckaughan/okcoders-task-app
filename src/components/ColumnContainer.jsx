@@ -29,21 +29,21 @@ export function ColumnContainer(props) {
       }
     });
 
-    const [isHover, setIsHover] = useState(false);
-    const [columns, setColumns] = useState([]);
+  const [isHover, setIsHover] = useState(false);
+  const [columns, setColumns] = useState([]);
 
-    const handleMouseEnter = () => {
-      setIsHover(true);
-    };
+  const handleMouseEnter = () => {
+    setIsHover(true);
+  };
 
-    const handleMouseLeave = () => {
-      setIsHover(false);
-    };
+  const handleMouseLeave = () => {
+    setIsHover(false);
+  };
 
-    const handleMouseAction = {
-      onMouseEnter: handleMouseEnter,
-      onMouseLeave: handleMouseLeave,
-    }
+  const handleMouseAction = {
+    onMouseEnter: handleMouseEnter,
+    onMouseLeave: handleMouseLeave,
+  }
 
   const deleteStyle = {
     display: isHover ? "block" : "none",
@@ -80,34 +80,33 @@ export function ColumnContainer(props) {
 
   const onDeleteColumn = async (columnId) => {
     try {
-        const response = await fetch(`/api/statuses?id=${props.column._id}`, {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-        });
-  
-        if (response.status === 200) {
-            console.log("Column Deleted Successfully");
-            setColumns((prevColumns) => prevColumns.filter((col) => col._id !== columnId));
-            if (props.onDelete) {
-                props.onDelete(columnId);
-            }
-        } else {
-            console.error('Error:', data.error || 'Unknown error');
+      const response = await fetch(`/api/statuses?id=${props.column._id}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (response.status === 200) {
+        console.log("Column Deleted Successfully");
+        if (props.onDeleteColumn) {
+          props.onDeleteColumn(columnId);
         }
+      } else {
+        console.error('Error:', data.error || 'Unknown error');
+      }
     } catch (error) {
-        console.error('Error deleting column:', error.message);
+      console.error('Error deleting column:', error.message);
     }
   };
 
   return (
     <Grid ref={setNodeRef} style={style} key={props.column._id} item xs={12} sm={4} >
       <Paper elevation={3} sx={props.columnStyles.column} {...attributes} {...listeners} {...handleMouseAction}>
-        <Typography variant="h4" style={{textAlign: "center", display: "flex", justifyContent: "space-between",}}>
+        <Typography variant="h4" style={{ textAlign: "center", display: "flex", justifyContent: "space-between", }}>
           {props.column.label}
           <Button onClick={handleDeleteAlert}>
-            <DeleteIcon 
-          style={deleteStyle}
-          />
+            <DeleteIcon
+              style={deleteStyle}
+            />
           </Button>
         </Typography>
         <hr />
@@ -144,11 +143,11 @@ export function ColumnContainer(props) {
         left: ".1em",
         width: "99%",
         backgroundColor: "white"
-      }} 
-      onClick={() => setShowNewTask(true)}>
+      }}
+        onClick={() => setShowNewTask(true)}>
         <AddCircleOutlineIcon sx={{ mr: 1 }} />ADD TASK
-        </Button>
-   </Grid>
+      </Button>
+    </Grid>
   );
 }
 export default ColumnContainer;
