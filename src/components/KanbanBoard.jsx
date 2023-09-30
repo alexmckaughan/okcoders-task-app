@@ -122,7 +122,6 @@ function KanbanBoard(props) {
 
       const data = await response.json();
       if (response.ok) {
-        console.log("New Column Created Successfully");
         setColumns((prevColumns) => [...prevColumns, data]);
         setNewColumnName("");
         if (props.onCreate) {
@@ -150,7 +149,6 @@ function KanbanBoard(props) {
     } else if (active.data.current?.task?.type === "Task") {
       setActiveTask(active.data.current.task);
     }
-    console.log("Drag started:", event);
   }
 
 

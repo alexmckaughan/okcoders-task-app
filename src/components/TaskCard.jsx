@@ -31,7 +31,7 @@ export function TaskCard(props) {
 
     const handleApiResponse = async (response, successMessage) => {
         if (response.ok) {
-            console.log(successMessage);
+
         } else {
             const data = await response.json();
             console.error('Error:', data.error || 'Unknown error');
