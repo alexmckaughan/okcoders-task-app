@@ -14,7 +14,7 @@ export default function Layout({ children }) {
     return (
         <div style={layoutStyle}>
         <Header />
-        <Container maxWidth="xl" style={{ marginTop: '20px' }}>
+        <Container maxWidth="xl" style={{ marginTop: '20px',}}>
             {children}
         </Container>
         <Footer />

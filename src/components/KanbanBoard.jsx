@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { ColumnContainer } from "./ColumnContainer";
-import { Container, Grid } from "@mui/material";
+import { Container, Grid, Paper, Button, Typography } from "@mui/material";
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
   DndContext,
   DragEndEvent,
@@ -18,16 +20,31 @@ const columnStyles = {
   container: {
     display: "flex",
     flexDirection: "column",
-    marginTop: "10px"
+    marginTop: "10px",
+    overflowX: "auto",
+    justifyContent: "space-evenly",
+
   },
   column: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
     border: "1px solid black",
     padding: "20px",
+    width: "18rem",
+    height: "30em",
+    overflowY: "auto",
   },
 };
+
+const newColumnStyles = {
+  border: "1px solid black",
+  marginTop: "2em",
+  marginLeft: "1.5em",
+}
+
+const buttonStyle = {
+width: "18em",
+height: "auto",
+alignItems: "center",
+}
 
 function KanbanBoard(props) {
   const [tasks, setTasks] = useState([]);
@@ -35,6 +52,7 @@ function KanbanBoard(props) {
   const [columns, setColumns] = useState([]); // Added this state
   const columnsId = useMemo(() => columns.map(column => column._id), [columns]);
   const [localTasks, setLocalTasks] = useState([]);
+  const [newColumnName, setNewColumnName] = useState("");
 
   const [activeColumn, setActiveColumn] = useState(null);
   const [activeTask, setActiveTask] = useState(null);
@@ -87,6 +105,39 @@ function KanbanBoard(props) {
       console.error("Failed to fetch statuses:", error);
     }
   }
+
+  const onColumnCreate = async () => {
+    try {
+        const nextColumnNumber = columns.length + 1;
+        const columnName = `Column ${nextColumnNumber}`;
+
+        const response = await fetch("/api/statuses/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ 
+              label: columnName,
+              project: props.project,
+            }),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            console.log("New Column Created Successfully");
+            setColumns((prevColumns) => [...prevColumns, data]);
+            setNewColumnName("");
+            if (props.onCreate) {
+                props.onCreate(data);
+            }
+            setActiveColumn(data.id);
+
+        } else {
+            console.error('Error:', data.error || 'Unknown error');
+        }
+    } catch (error) {
+        console.error('Error creating column:', error.message);
+    }
+};
+      
 
   function onDragStart(event) {
     const { active } = event;
@@ -144,7 +195,14 @@ function KanbanBoard(props) {
   return (
     <DndContext onDragStart={onDragStart} onDragEnd={onDragEnd} onDragOver={onDragOver} sensors={sensors}>
       <Container style={columnStyles.container}>
-        <Grid container spacing={2}>
+        <Grid 
+        container
+        columns='auto'
+        alignItems="flex-start"
+        spacing={4}
+        wrap="nowrap"
+       
+         >
           <SortableContext items={columnsId}>
             {columns.map((column) => (
               <ColumnContainer
@@ -155,8 +213,19 @@ function KanbanBoard(props) {
                 columnStyles={columnStyles}
                 project={props.project}
                 status={column}
-              />
+              >
+                
+              </ColumnContainer>
+
             ))}
+            <Paper style={newColumnStyles}>
+              <Button onClick={onColumnCreate} style={buttonStyle}>
+
+                <Typography variant="h5" style={{textAlign: "center"}}>
+                <AddCircleOutlineIcon /> New Column
+                </Typography>
+              </Button>
+            </Paper>
           </SortableContext>
         </Grid>
       </Container>

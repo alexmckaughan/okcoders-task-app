@@ -7,6 +7,7 @@ import {
   Button,
   Stack,
 } from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
 import { TaskCard } from "./TaskCard";
 import { useRouter } from "next/router";
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -27,6 +28,26 @@ export function ColumnContainer(props) {
         type: "column",
       }
     });
+
+    const [isHover, setIsHover] = useState(false);
+    const [columns, setColumns] = useState([]);
+
+    const handleMouseEnter = () => {
+      setIsHover(true);
+    };
+
+    const handleMouseLeave = () => {
+      setIsHover(false);
+    };
+
+    const handleMouseAction = {
+      onMouseEnter: handleMouseEnter,
+      onMouseLeave: handleMouseLeave,
+    }
+
+  const deleteStyle = {
+    display: isHover ? "block" : "none",
+  }
 
   const style = {
     transition,
@@ -51,14 +72,46 @@ export function ColumnContainer(props) {
     props.fetchTasks(updatedTasks);
   };
 
+  const handleDeleteAlert = () => {
+    if (window.confirm("Are you sure you want to delete this column?")) {
+      onDeleteColumn(props.column._id);
+    }
+  };
+
+  const onDeleteColumn = async (columnId) => {
+    try {
+        const response = await fetch(`/api/statuses?id=${props.column._id}`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+        });
+  
+        if (response.status === 200) {
+            console.log("Column Deleted Successfully");
+            setColumns((prevColumns) => prevColumns.filter((col) => col._id !== columnId));
+            if (props.onDelete) {
+                props.onDelete(columnId);
+            }
+        } else {
+            console.error('Error:', data.error || 'Unknown error');
+        }
+    } catch (error) {
+        console.error('Error deleting column:', error.message);
+    }
+  };
+
   return (
-    <Grid ref={setNodeRef} style={style} key={props.column._id} item xs={12} sm={4}>
-      <Paper elevation={3} sx={props.columnStyles.column} {...attributes} {...listeners}>
-        <Typography variant="h4">
+    <Grid ref={setNodeRef} style={style} key={props.column._id} item xs={12} sm={4} >
+      <Paper elevation={3} sx={props.columnStyles.column} {...attributes} {...listeners} {...handleMouseAction}>
+        <Typography variant="h4" style={{textAlign: "center", display: "flex", justifyContent: "space-between",}}>
           {props.column.label}
-          <hr />
+          <Button onClick={handleDeleteAlert}>
+            <DeleteIcon 
+          style={deleteStyle}
+          />
+          </Button>
         </Typography>
-        <Stack spacing={1} >
+        <hr />
+        <Stack spacing={1}>
           <SortableContext items={taskIds}>
             {props.tasks.map((task) => (
               <Box key={task._id}>
@@ -82,12 +135,20 @@ export function ColumnContainer(props) {
                 type="task"
               />
             )}
-            <Button onClick={() => setShowNewTask(true)}><AddCircleOutlineIcon sx={{ mr: 1 }} /> ADD TASK</Button>
           </SortableContext>
         </Stack>
       </Paper>
-    </Grid>
+      <Button style={{
+        position: "relative",
+        bottom: "2.7em",
+        left: ".1em",
+        width: "99%",
+        backgroundColor: "white"
+      }} 
+      onClick={() => setShowNewTask(true)}>
+        <AddCircleOutlineIcon sx={{ mr: 1 }} />ADD TASK
+        </Button>
+   </Grid>
   );
 }
-
 export default ColumnContainer;
