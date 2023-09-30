@@ -201,7 +201,7 @@ function KanbanBoard(props) {
 
   return (
     <DndContext onDragStart={onDragStart} onDragEnd={onDragEnd} onDragOver={onDragOver} sensors={sensors}>
-      <Box style={{ ...columnStyles.container, width: '100%', overflowX: 'hidden', overflowY: 'hidden', whiteSpace: 'nowrap' }}>
+      <Box style={{ ...columnStyles.container, width: '100%', overflowX: 'auto', whiteSpace: 'nowrap' }}>
         <Grid
           container
           columns='auto'
